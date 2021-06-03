@@ -1,1 +1,6 @@
-console.log('Hello world');
+import { app } from './shared/router';
+import './styles.scss';
+
+window.onload = () => {
+  app.toGarage();
+};
