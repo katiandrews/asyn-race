@@ -3,7 +3,6 @@ import { App } from '../app';
 export const app = new App(document.body);
 
 function router(location: string) {
-  app.clear();
   switch (location) {
     case '#/garage':
       app.toGarage();

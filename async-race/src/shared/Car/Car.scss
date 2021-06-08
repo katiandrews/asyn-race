@@ -1,0 +1,57 @@
+.car-item {
+  position: relative;
+  width: 100%;
+  height: 55px;
+  background-image: url('../../assets/road.jpg');
+  background-position: left 0 top 20px;
+  background-size: 200px 35px;
+  background-repeat: repeat-x;
+
+  & .car {
+    position: relative;
+    top: 30px;
+    left: 60px;
+  }
+
+  & .car-name {
+    position: absolute;
+    top: -15px;
+    left: 120px;
+    font-size: 16px;
+    color: rgb(255, 208, 0)
+  }
+
+  & .car-control-buttons {
+    display: flex;
+    gap: 5px;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    height: max-content;
+  }
+
+  & .engine-control-buttons {
+    display: flex;
+    gap: 5px;
+    position: relative;
+    width: max-content;
+    top: 5px;
+  }
+
+  & .finish-flag {
+    position: absolute;
+    top: 20px;
+    right: 10%;
+    width: 35px;
+    height: 35px;
+    background-image: url('../../assets/finish.png');
+    background-position: center;
+    background-size: cover;
+    transform: rotate(90deg);
+  }
+}
+
+
+
+
+

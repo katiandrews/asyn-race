@@ -1,0 +1,29 @@
+.button {
+  padding: 4px 8px;
+  font-size: 9px;
+  font-weight: bold;
+  border: none;
+  text-transform: uppercase;
+}
+
+.button_green {
+  width: 7rem;
+  background-color: rgb(213, 247, 163);
+  border-bottom: 4px solid rgb(135, 184, 62);
+}
+
+.button_blue {
+  background-color: rgb(163, 216, 247);
+  border-bottom: 4px solid rgb(73, 96, 175);
+}
+
+.outline-button {
+  padding: 2px 4px;
+  background-color: rgb(231, 252, 198);
+  border: 1px solid green;
+}
+
+.button_disabled {
+  opacity: 0.5;
+}
+

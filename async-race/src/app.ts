@@ -8,22 +8,20 @@ export class App {
 
   private main: BaseComponent = new BaseComponent(this.rootElement, 'main', ['main']);
 
-  private garage: Garage | null = null;
+  private garage: Garage = new Garage(this.main.element);
 
-  private winners: Winners | null = null;
+  private winners: Winners = new Winners(this.main.element);
 
   constructor(readonly rootElement: HTMLElement) {
   }
 
-  clear(): void {
-    this.main.element.innerHTML = '';
-  }
-
   toGarage(): void {
-    this.garage = new Garage(this.main.element);
+    this.winners.element.remove();
+    this.main.element.appendChild(this.garage.element);
   }
 
   toWinners(): void {
-    this.winners = new Winners(this.main.element);
+    this.garage.element.remove();
+    this.main.element.appendChild(this.winners.element);
   }
 }

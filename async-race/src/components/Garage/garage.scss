@@ -1,4 +1,13 @@
 .garage {
-  font-size: 54px;
   color: white;
+
+  & .cars-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
 }
+
