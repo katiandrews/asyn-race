@@ -24,14 +24,14 @@ export class CarCreation extends BaseComponent {
     };
   }
 
-  clearInputs() {
+  clearInputs(): void {
     this.name.element.value = '';
     this.color.element.value = '#ffffff';
     this.unlockButton();
   }
 
   createCar(node: HTMLElement, carsList: Car[], pageName: HTMLElement,
-            callback: () => void, selectCallback: () => void): void {
+    callback: () => void, selectCallback: () => void): void {
     this.button.element.addEventListener('click', (event) => {
       event.preventDefault();
       const body = this.getProperties();
@@ -39,9 +39,9 @@ export class CarCreation extends BaseComponent {
         const newCar = new Car(node, result.name, result.color, result.id, callback);
         carsList.push(newCar);
         selectCallback();
-        api.getCars().then((result) => {
-          pageName.textContent = `Garage (${result.length})`;
-        })
+        api.getCars().then((res) => {
+          pageName.textContent = `Garage (${res.length})`;
+        });
         this.clearInputs();
       });
     });

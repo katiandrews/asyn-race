@@ -19,7 +19,7 @@ export class Car extends BaseComponent {
   selected = false;
 
   constructor(node: HTMLElement, name: string, color: string, id: number,
-              callback: () => void) {
+    callback: () => void) {
     super(node, 'li', ['car-item']);
     this.car.element.innerHTML = `<svg width="80" height="20" viewBox="0 0 108 35" fill="${color}" xmlns="http://www.w3.org/2000/svg">
       <g clip-path="url(#clip0)">

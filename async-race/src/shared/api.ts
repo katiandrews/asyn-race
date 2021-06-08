@@ -27,7 +27,7 @@ export class Api {
       headers: {
         'Content-Type': 'application/json',
       },
-    })
+    });
     return response.json();
   }
 

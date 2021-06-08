@@ -17,7 +17,7 @@ export class GarageControl extends BaseComponent {
   }
 
   addCar(node: HTMLElement, carsList: Car[], pageName: HTMLElement,
-          callback: () => void, selectCallback: () => void): void {
+    callback: () => void, selectCallback: () => void): void {
     this.createCar.createCar(node, carsList, pageName, callback, selectCallback);
   }
 

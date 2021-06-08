@@ -20,9 +20,9 @@ export class Garage extends BaseComponent {
         this.carsList.element,
         this.carsArray,
         this.pageName.element,
-        () => { this.changePageName() },
-        () => { this.addSelectListener() },);
-      // this.removeSelectedCars();
+        () => { this.changePageName(); },
+        () => { this.addSelectListener(); },
+      );
     });
   }
 
@@ -33,7 +33,8 @@ export class Garage extends BaseComponent {
         this.carsList.element,
         element.name, element.color,
         element.id,
-        () => { this.changePageName() });
+        () => { this.changePageName(); },
+      );
       this.carsArray.push(car);
     });
     this.addSelectListener();
@@ -68,6 +69,6 @@ export class Garage extends BaseComponent {
   changePageName(): void {
     api.getCars().then((result) => {
       this.pageName.element.textContent = `Garage (${result.length})`;
-    })
+    });
   }
 }
