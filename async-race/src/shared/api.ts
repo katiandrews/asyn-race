@@ -20,14 +20,15 @@ export class Api {
     return response.json();
   }
 
-  async createCar(body: CarProperties): Promise<void> {
-    (await fetch(this.garage, {
+  async createCar(body: CarProperties): Promise<CarModel> {
+    const response = await fetch(this.garage, {
       method: 'POST',
       body: JSON.stringify(body),
       headers: {
         'Content-Type': 'application/json',
       },
-    })).json();
+    })
+    return response.json();
   }
 
   async deleteCar(id: number): Promise<void> {

@@ -14,7 +14,6 @@ export class CarCreation extends BaseComponent {
 
   constructor(node: HTMLElement) {
     super(node, 'div', ['create-car_inputs']);
-
     this.name.element.addEventListener('input', () => { this.unlockButton(); });
   }
 
@@ -25,17 +24,26 @@ export class CarCreation extends BaseComponent {
     };
   }
 
-  createCar(node: HTMLElement, id: number, carsList: Car[], pageName: HTMLElement): void {
-    this.button.element.addEventListener('click', () => {
-      const body = {
-        name: this.name.element.value,
-        color: this.color.element.value,
-      };
-      api.createCar(body);
-      const carProperties = this.getProperties();
-      const newCar = new Car(node, carProperties.name, carProperties.color, id);
-      carsList.push(newCar);
-      pageName.textContent = `Garage (${carsList.length})`;
+  clearInputs() {
+    this.name.element.value = '';
+    this.color.element.value = '#ffffff';
+    this.unlockButton();
+  }
+
+  createCar(node: HTMLElement, carsList: Car[], pageName: HTMLElement,
+            callback: () => void, selectCallback: () => void): void {
+    this.button.element.addEventListener('click', (event) => {
+      event.preventDefault();
+      const body = this.getProperties();
+      api.createCar(body).then((result) => {
+        const newCar = new Car(node, result.name, result.color, result.id, callback);
+        carsList.push(newCar);
+        selectCallback();
+        api.getCars().then((result) => {
+          pageName.textContent = `Garage (${result.length})`;
+        })
+        this.clearInputs();
+      });
     });
   }
 

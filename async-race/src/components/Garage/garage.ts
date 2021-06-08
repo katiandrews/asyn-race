@@ -16,19 +16,27 @@ export class Garage extends BaseComponent {
   constructor(node: HTMLElement) {
     super(node, 'section', ['garage']);
     this.renderGarage().then(() => {
-      this.garageControl.addCar(this.carsList.element, this.carsArray.length + 1, this.carsArray,
-        this.pageName.element);
-      this.addSelectListener();
-      this.removeCarfromGarage();
+      this.garageControl.addCar(
+        this.carsList.element,
+        this.carsArray,
+        this.pageName.element,
+        () => { this.changePageName() },
+        () => { this.addSelectListener() },);
+      // this.removeSelectedCars();
     });
   }
 
   async renderGarage(): Promise<void> {
     const response = await api.getCars();
     response.forEach((element) => {
-      const car = new Car(this.carsList.element, element.name, element.color, element.id);
+      const car = new Car(
+        this.carsList.element,
+        element.name, element.color,
+        element.id,
+        () => { this.changePageName() });
       this.carsArray.push(car);
     });
+    this.addSelectListener();
     this.changePageName();
   }
 
@@ -57,17 +65,9 @@ export class Garage extends BaseComponent {
     });
   }
 
-  removeCarfromGarage(): void {
-    this.carsArray.forEach((el) => {
-      el.onDelete(() => {
-        const removeIndex = this.carsArray.indexOf(el);
-        this.carsArray.splice(removeIndex, 1);
-        this.changePageName();
-      });
-    });
-  }
-
   changePageName(): void {
-    this.pageName.element.textContent = `Garage (${this.carsArray.length})`;
+    api.getCars().then((result) => {
+      this.pageName.element.textContent = `Garage (${result.length})`;
+    })
   }
 }

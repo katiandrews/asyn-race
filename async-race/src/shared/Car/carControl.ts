@@ -7,8 +7,9 @@ export class CarControl extends BaseComponent {
 
   private remove = new Button(this.element, ['button', 'button_blue'], 'Remove', false);
 
-  constructor(node: HTMLElement) {
+  constructor(node: HTMLElement, id: number, callback: () => void) {
     super(node, 'div', ['car-control-buttons']);
+    this.deleteCar(id, node, callback);
   }
 
   deleteCar(id: number, element: HTMLElement, callback: () => void): void {
@@ -20,7 +21,8 @@ export class CarControl extends BaseComponent {
   }
 
   selectCar(callback: () => void): void {
-    this.select.element.addEventListener('click', () => {
+    this.select.element.addEventListener('click', (event) => {
+      event.preventDefault();
       callback();
     });
   }

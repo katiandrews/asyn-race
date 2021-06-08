@@ -18,7 +18,8 @@ export class Car extends BaseComponent {
 
   selected = false;
 
-  constructor(node: HTMLElement, name: string, color: string, id: number) {
+  constructor(node: HTMLElement, name: string, color: string, id: number,
+              callback: () => void) {
     super(node, 'li', ['car-item']);
     this.car.element.innerHTML = `<svg width="80" height="20" viewBox="0 0 108 35" fill="${color}" xmlns="http://www.w3.org/2000/svg">
       <g clip-path="url(#clip0)">
@@ -27,15 +28,13 @@ export class Car extends BaseComponent {
       <path d="M87.0804 19.3867C82.7685 19.3867 79.2749 22.8809 79.2749 27.1925C79.2749 27.9068 79.4003 28.5872 79.5824 29.2454C80.4877 32.5541 83.4853 35 87.0807 35C90.6761 35 93.6734 32.5541 94.5804 29.2454C94.7588 28.5875 94.8879 27.9091 94.8879 27.1925C94.8859 22.8789 91.392 19.3867 87.0804 19.3867Z"/>
       </g><defs><clipPath id="clip0"><rect width="107.631" height="35"/></clipPath></defs></svg>`;
     this.id = id;
-    this.carControls = new CarControl(this.element);
+    this.carControls = new CarControl(this.element, this.id, callback);
     this.name.element.textContent = `${name}`;
   }
 
   onSelect(callback: () => void): void {
-    this.carControls.selectCar(callback);
-  }
-
-  onDelete(callback: () => void): void {
-    this.carControls.deleteCar(this.id, this.element, callback);
+    this.carControls.selectCar(() => {
+      callback();
+    });
   }
 }

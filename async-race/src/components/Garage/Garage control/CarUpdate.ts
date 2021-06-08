@@ -28,8 +28,9 @@ export class CarUpdate extends BaseComponent {
   }
 
   addUpdateListener(flag: boolean, id: number, carImage: SVGSVGElement, name: HTMLElement): void {
-    this.button.element.addEventListener('click', () => {
+    this.button.element.addEventListener('click', (event) => {
       if (flag) {
+        // event.preventDefault();
         this.updateCar(id, carImage, name);
       }
     });
@@ -43,5 +44,11 @@ export class CarUpdate extends BaseComponent {
     api.updateCar(id, body);
     carImage.style.fill = this.color.element.value;
     name.textContent = this.name.element.value;
+  }
+
+  clearInputs() {
+    this.name.element.value = '';
+    this.color.element.value = '#ffffff';
+    this.unlockButton();
   }
 }
