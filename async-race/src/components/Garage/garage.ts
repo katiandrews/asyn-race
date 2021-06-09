@@ -9,21 +9,17 @@ export class Garage extends BaseComponent {
 
   private pageName = new BaseComponent(this.element, 'h1', ['page-title']);
 
+  private pageNumber = new BaseComponent(this.element, 'h2', ['page-number']);
+
   private carsList = new BaseComponent(this.element, 'ul', ['cars-list']);
 
   private carsArray: Car[] = [];
 
   constructor(node: HTMLElement) {
     super(node, 'section', ['garage']);
-    this.renderGarage().then(() => {
-      this.garageControl.addCar(
-        this.carsList.element,
-        this.carsArray,
-        this.pageName.element,
-        () => { this.changePageName(); },
-        () => { this.addSelectListener(); },
-      );
-    });
+    this.renderGarage();
+    this.garageControl.addCar(this.carsList.element, this.carsArray, this.pageName.element,
+                              () => { this.changePageName(); }, () => { this.addSelectListener(); });
   }
 
   async renderGarage(): Promise<void> {

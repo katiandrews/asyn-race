@@ -10,11 +10,11 @@ export class CarCreation extends BaseComponent {
 
   color: Input = new Input(this.element, ['color-input'], 'color');
 
-  button: Button = new Button(this.element, ['button', 'button_blue'], 'Create', true);
+  button: Button = new Button(this.element, ['button', 'button_blue'], 'Create', false);
 
   constructor(node: HTMLElement) {
     super(node, 'div', ['create-car_inputs']);
-    this.name.element.addEventListener('input', () => { this.unlockButton(); });
+    this.name.element.addEventListener('input', () => { this.toggleButtonLock(); });
   }
 
   getProperties(): CarProperties {
@@ -27,7 +27,7 @@ export class CarCreation extends BaseComponent {
   clearInputs(): void {
     this.name.element.value = '';
     this.color.element.value = '#ffffff';
-    this.unlockButton();
+    this.toggleButtonLock();
   }
 
   createCar(node: HTMLElement, carsList: Car[], pageName: HTMLElement,
@@ -47,7 +47,7 @@ export class CarCreation extends BaseComponent {
     });
   }
 
-  unlockButton(): void {
+  toggleButtonLock(): void {
     if (this.name.element.value === '') {
       this.button.element.disabled = true;
     } else {

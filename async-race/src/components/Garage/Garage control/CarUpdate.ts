@@ -14,7 +14,7 @@ export class CarUpdate extends BaseComponent {
     super(node, 'div', ['update-car_inputs']);
   }
 
-  unlockButton(): void {
+  toggleButtonLock(): void {
     if (this.name.element.value === '') {
       this.button.element.disabled = true;
     } else {
@@ -28,11 +28,12 @@ export class CarUpdate extends BaseComponent {
   }
 
   addUpdateListener(flag: boolean, id: number, carImage: SVGSVGElement, name: HTMLElement): void {
-    this.button.element.addEventListener('click', () => {
+    this.button.element.addEventListener('click', (event) => {
       if (flag) {
+        event.preventDefault();
         this.updateCar(id, carImage, name);
       }
-    });
+    }, { once: true });
   }
 
   updateCar(id: number, carImage: SVGSVGElement, name: HTMLElement): void {
@@ -40,14 +41,16 @@ export class CarUpdate extends BaseComponent {
       name: this.name.element.value,
       color: this.color.element.value,
     };
-    api.updateCar(id, body);
     carImage.style.fill = this.color.element.value;
     name.textContent = this.name.element.value;
+    api.updateCar(id, body).then(() => {
+      this.clearInputs();
+    });
   }
 
   clearInputs(): void {
     this.name.element.value = '';
     this.color.element.value = '#ffffff';
-    this.unlockButton();
+    this.toggleButtonLock();
   }
 }
