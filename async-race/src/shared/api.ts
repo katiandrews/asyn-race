@@ -1,5 +1,6 @@
 import { CarModel } from './models/car-model';
 import { CarProperties } from './models/car-properties';
+import { CarsPage } from './models/Cars-page-model';
 
 export class Api {
   private base = 'http://127.0.0.1:3000';
@@ -10,12 +11,15 @@ export class Api {
 
   private winners = `${this.base}/winners`;
 
-  async getCars(): Promise<CarModel[]> {
-    const response = await fetch(`${this.garage}`);
-    return response.json();
+  async getCars(page = 1, limit = 7): Promise<CarsPage> {
+    const response = await fetch(`${this.garage}?_page=${page}&_limit=${limit}`);
+    return {
+      items: await response.json(),
+      count: Number(response.headers.get('X-Total-Count'))
+    }
   }
 
-  async getCar(id: number) :Promise<CarModel> {
+  async getCar(id: number): Promise<CarModel> {
     const response = await fetch(`${this.garage}/${id}`);
     return response.json();
   }

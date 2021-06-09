@@ -12,10 +12,10 @@ export class CarControl extends BaseComponent {
     this.deleteCar(id, node, callback);
   }
 
-  deleteCar(id: number, element: HTMLElement, callback: () => void): void {
+  deleteCar(id: number, car: HTMLElement, callback: () => void): void {
     this.remove.element.addEventListener('click', () => {
       api.deleteCar(id);
-      element.remove();
+      car.remove();
       callback();
     });
   }

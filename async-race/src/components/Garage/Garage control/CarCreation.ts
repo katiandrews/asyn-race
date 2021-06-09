@@ -10,7 +10,7 @@ export class CarCreation extends BaseComponent {
 
   color: Input = new Input(this.element, ['color-input'], 'color');
 
-  button: Button = new Button(this.element, ['button', 'button_blue'], 'Create', false);
+  button: Button = new Button(this.element, ['button', 'button_blue'], 'Create', true);
 
   constructor(node: HTMLElement) {
     super(node, 'div', ['create-car_inputs']);
@@ -36,11 +36,13 @@ export class CarCreation extends BaseComponent {
       event.preventDefault();
       const body = this.getProperties();
       api.createCar(body).then((result) => {
-        const newCar = new Car(node, result.name, result.color, result.id, callback);
-        carsList.push(newCar);
-        selectCallback();
         api.getCars().then((res) => {
-          pageName.textContent = `Garage (${res.length})`;
+          pageName.textContent = `Garage (${res.count})`;
+          if (res.count <= 7) {
+            const newCar = new Car(node, result.name, result.color, result.id, callback);
+            carsList.push(newCar);
+          }
+          selectCallback();
         });
         this.clearInputs();
       });
