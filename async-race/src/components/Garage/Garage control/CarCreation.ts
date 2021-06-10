@@ -30,17 +30,18 @@ export class CarCreation extends BaseComponent {
     this.toggleButtonLock();
   }
 
-  createCar(node: HTMLElement, carsList: Car[], pageName: HTMLElement,
+  createCar(node: HTMLElement, carsArray: Car[], pageName: HTMLElement,
     callback: () => void, selectCallback: () => void): void {
     this.button.element.addEventListener('click', (event) => {
       event.preventDefault();
       const body = this.getProperties();
-      api.createCar(body).then((result) => {
-        api.getCars().then((res) => {
-          pageName.textContent = `Garage (${res.count})`;
-          if (res.count <= 7) {
+      api.getCars().then(async (res) => {
+        const items = await res.items;
+        api.createCar(body).then((result) => {
+          pageName.textContent = `Garage (${res.count + 1})`;
+          if (items.length < 7) { // check if there are less items on page than page length
             const newCar = new Car(node, result.name, result.color, result.id, callback);
-            carsList.push(newCar);
+            if (res.count < 7) carsArray.push(newCar); // check if there are less items overall than page length
           }
           selectCallback();
         });

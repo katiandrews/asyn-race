@@ -15,8 +15,8 @@ export class Api {
     const response = await fetch(`${this.garage}?_page=${page}&_limit=${limit}`);
     return {
       items: await response.json(),
-      count: Number(response.headers.get('X-Total-Count'))
-    }
+      count: Number(response.headers.get('X-Total-Count')),
+    };
   }
 
   async getCar(id: number): Promise<CarModel> {

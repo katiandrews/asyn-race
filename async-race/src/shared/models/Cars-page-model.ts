@@ -1,4 +1,4 @@
-import { CarModel } from "./car-model";
+import { CarModel } from './car-model';
 
 export interface CarsPage {
   items: Promise<CarModel[]>;

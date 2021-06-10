@@ -2,8 +2,11 @@ import { api } from '../../shared/api';
 import { BaseComponent } from '../../shared/baseComponent';
 import { Button } from '../../shared/button/button';
 import { Car } from '../../shared/Car/Car';
+import { CarModel } from '../../shared/models/car-model';
 import { GarageControl } from './Garage control/garageControl';
 import './garage.scss';
+
+const PAGE_LENGTH = 7;
 
 export class Garage extends BaseComponent {
   private garageControl: GarageControl = new GarageControl(this.element);
@@ -22,55 +25,64 @@ export class Garage extends BaseComponent {
 
   private nextPage = new Button(this.paginationContainer.element, ['button', 'button_green'], 'Next', false);
 
-  private page: number = 1;
+  private page = 1;
 
   constructor(node: HTMLElement) {
     super(node, 'section', ['garage']);
     this.pageNumber.element.textContent = `Page #${this.page}`;
     this.renderGarage();
     this.garageControl.addCar(this.carsList.element, this.carsArray, this.pageName.element,
-                              () => { this.changePageName(); this.renderLastElement(); },
-                              () => { this.addSelectListener(); });
-    this.changePage(this.prevPage);
-    this.changePage(this.nextPage);
+      () => { this.changePageName(); this.updatePage(); },
+      () => { this.addSelectListener(); });
+    this.prevPage.element.addEventListener('click', () => this.changePage(this.prevPage));
+    this.nextPage.element.addEventListener('click', () => this.changePage(this.nextPage));
+    this.element.addEventListener('click', () => this.togglePaginationButton());
   }
 
   async renderGarage(): Promise<void> {
-    this.renderCars();
+    this.renderCarsOnStart();
     this.addSelectListener();
     this.changePageName();
-    this.lockPaginationButton();
+    this.togglePaginationButton();
   }
 
-  renderCars(): void {
+  renderCarsOnStart(): void {
     api.getCars(this.page).then(async (response) => {
       const items = await response.items;
-      if (this.carsArray.length === 0) {
-        items.forEach((element) => {
+      items.forEach((element) => {
         const car = new Car(
-        this.carsList.element,
-        element.name, element.color,
-        element.id,
-        () => { this.changePageName();  this.renderLastElement(); },);
+          this.carsList.element,
+          element.name, element.color,
+          element.id,
+          () => { this.changePageName(); this.updatePage(); },
+        );
         this.carsArray.push(car);
-        });
-      }
-    })
+      });
+    });
   }
 
-  renderLastElement(): void {
+  updatePage(): void {
     api.getCars(this.page).then(async (response) => {
-      const items = await response.items;
-      if (items.length >= 7) {
-        const lastElement = items[6];
-        const car = new Car(
-        this.carsList.element,
-        lastElement.name, lastElement.color,
-        lastElement.id,
-        () => { this.changePageName(); this.renderLastElement(); },);
-        this.carsArray.push(car);
+      const pageItems = await response.items;
+      if (pageItems.length === 0 && this.page > 1) {
+        this.changePage(this.prevPage);
+      } else if (pageItems.length > 0 && pageItems.length < PAGE_LENGTH && this.page === 1) {
+        this.updateCarsArray();
+      } else if (pageItems.length === PAGE_LENGTH) {
+        this.renderLastElement(pageItems);
       }
-    })
+    });
+  }
+
+  renderLastElement(pageItems: CarModel[]): void {
+    const lastElement = pageItems[6];
+    const car = new Car(
+      this.carsList.element,
+      lastElement.name, lastElement.color,
+      lastElement.id,
+      () => { this.changePageName(); this.updatePage(); },
+    );
+    this.carsArray.push(car);
     this.updateCarsArray();
   }
 
@@ -80,15 +92,15 @@ export class Garage extends BaseComponent {
       this.carsArray.forEach((car) => {
         let check = false;
         items.forEach((item) => {
-          if(car.id === item.id) {
+          if (car.id === item.id) {
             check = true;
           }
-        })
+        });
         if (check === false) {
           this.carsArray.splice(this.carsArray.indexOf(car), 1);
         }
-      })
-    })
+      });
+    });
   }
 
   addSelectListener(): void {
@@ -117,49 +129,69 @@ export class Garage extends BaseComponent {
   }
 
   changePageName(): void {
-    api.getCars().then((result) => {
+    api.getCars(this.page).then((result) => {
       this.pageName.element.textContent = `Garage (${result.count})`;
     });
   }
 
-  changePageNumber(num: number) {
+  changePageNumber(num: number): void {
     this.pageNumber.element.textContent = `Page #${num}`;
   }
 
-  changePage(direction: Button) {
-    direction.element.addEventListener('click', () => {
-      if (direction === this.prevPage) {
-        this.unlockPaginationButton(this.nextPage);
-        this.changePageNumber(--this.page);
-      } else if (direction === this.nextPage) {
-        this.unlockPaginationButton(this.prevPage);
-        this.changePageNumber(++this.page);
-      }
-      this.lockPaginationButton();
-      this.replaceCars(this.page);
-    })
+  changePage(direction: Button): void {
+    if (direction === this.prevPage) {
+      this.changePageNumber(--this.page);
+      this.addMissingCars(this.page);
+    } else if (direction === this.nextPage) {
+      this.changePageNumber(++this.page);
+      this.removeExtraCars(this.page);
+    }
+    this.togglePaginationButton();
+    this.replaceCars(this.page);
   }
 
-  replaceCars(page: number) {
+  removeExtraCars(page: number): void {
+    api.getCars(page).then(async (respone) => {
+      const items = await respone.items;
+      if (items.length < PAGE_LENGTH) {
+        for (let i = items.length; i < PAGE_LENGTH; i++) {
+          this.carsArray[i].element.remove();
+        }
+      }
+    });
+  }
+
+  addMissingCars(page: number): void {
+    let thisPage = page;
+    api.getCars(++thisPage).then(async (respone) => {
+      const items = await respone.items;
+      if (items.length < PAGE_LENGTH) {
+        for (let i = 0; i < PAGE_LENGTH; i++) {
+          this.carsList.element.appendChild(this.carsArray[i].element);
+        }
+      }
+    });
+  }
+
+  replaceCars(page: number): void {
     api.getCars(page).then(async (response) => {
       const items = await response.items;
       for (let i = 0; i < items.length; i++) {
+        this.carsArray[i].id = items[i].id;
         const carImage = this.carsArray[i].element.querySelector('svg');
         if (carImage) carImage.style.fill = items[i].color;
         this.carsArray[i].name.element.textContent = items[i].name;
       }
-      })
+    });
   }
 
-  unlockPaginationButton(button: Button) {
-    if (button.element.disabled) button.element.disabled = false;
-  }
-
-  lockPaginationButton() {
+  togglePaginationButton(): void {
     if (this.page === 1) this.prevPage.element.disabled = true;
+    if (this.page > 1) this.prevPage.element.disabled = false;
     api.getCars(this.page + 1).then(async (response) => {
-        const items = await response.items;
-        if (items.length === 0) this.nextPage.element.disabled = true;
-    })
+      const items = await response.items;
+      if (items.length === 0) this.nextPage.element.disabled = true;
+      if (items.length > 0) this.nextPage.element.disabled = false;
+    });
   }
 }

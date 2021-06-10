@@ -1,3 +1,4 @@
+import { api } from '../api';
 import { BaseComponent } from '../baseComponent';
 import './Car.scss';
 import { CarControl } from './carControl';
@@ -10,7 +11,7 @@ export class Car extends BaseComponent {
 
   private car = new BaseComponent(this.element, 'span', ['car']);
 
-  private carControls: CarControl;
+  private carControls = new CarControl(this.element);
 
   name = new BaseComponent(this.element, 'h3', ['car-name']);
 
@@ -28,13 +29,19 @@ export class Car extends BaseComponent {
       <path d="M87.0804 19.3867C82.7685 19.3867 79.2749 22.8809 79.2749 27.1925C79.2749 27.9068 79.4003 28.5872 79.5824 29.2454C80.4877 32.5541 83.4853 35 87.0807 35C90.6761 35 93.6734 32.5541 94.5804 29.2454C94.7588 28.5875 94.8879 27.9091 94.8879 27.1925C94.8859 22.8789 91.392 19.3867 87.0804 19.3867Z"/>
       </g><defs><clipPath id="clip0"><rect width="107.631" height="35"/></clipPath></defs></svg>`;
     this.id = id;
-    this.carControls = new CarControl(this.element, this.id, callback);
     this.name.element.textContent = `${name}`;
+    this.carControls.remove.element.addEventListener('click', () => this.delete(callback));
   }
 
   onSelect(callback: () => void): void {
     this.carControls.selectCar(() => {
       callback();
     });
+  }
+
+  delete(callback: () => void): void {
+    api.deleteCar(this.id);
+    this.element.remove();
+    callback();
   }
 }
