@@ -3,12 +3,11 @@ import { api } from '../../shared/api';
 import { BaseComponent } from '../../shared/baseComponent';
 import { Button } from '../../shared/button/button';
 import { Car } from '../../shared/Car/Car';
+import { PAGE_LENGTH } from '../../shared/constants';
 import { CarModel } from '../../shared/models/car-model';
 import { CarProperties } from '../../shared/models/car-properties';
 import { GarageControl } from './Garage control/garageControl';
 import './garage.scss';
-
-const PAGE_LENGTH = 7;
 
 export class Garage extends BaseComponent {
   private garageControl: GarageControl = new GarageControl(this.element);
@@ -44,23 +43,24 @@ export class Garage extends BaseComponent {
   }
 
   async renderGarage(): Promise<void> {
-    this.renderCarsOnStart();
+    this.renderCars();
     this.changePageName();
     this.togglePaginationButtons();
   }
 
-  renderCarsOnStart(): void {
-    api.getCars(this.page).then(async (response) => {
-      const items = await response.items;
-      items.forEach((element) => {
-        const car = new Car(
-          this.carsList.element,
-          element.name, element.color,
-          element.id,
-          () => { this.changePageName(); this.updatePage(); },
-        );
-        this.carsArray.push(car);
-      });
+   renderCars() {
+    api.getCars(this.page).then(async (cars) => {
+      const items = await cars.items;
+      if (this.carsArray.length < PAGE_LENGTH) {
+        for (let i = this.carsArray.length; i < items.length; i++) {
+          const newCarOnPage = new Car(this.carsList.element, items[i].name, items[i].color, items[i].id,
+            () => { this.changePageName(); this.updatePage(); });
+          this.carsArray.push(newCarOnPage);
+        }
+      } else {
+        this.replaceCars(this.page);
+        this.addMissingCars(this.page);
+      }
       this.addSelectListener();
     });
   }
@@ -208,23 +208,10 @@ export class Garage extends BaseComponent {
   addCars(quantity: number, getBody: () => CarProperties): void {
     for (let i = 0; i < quantity; i++) {
       api.createCar(getBody());
-      this.togglePaginationButtons();
-      this.changePageName();
-      this.garageControl.createCar.clearInputs();
     }
-    api.getCars(this.page).then(async (cars) => {
-      const items = await cars.items;
-      if (this.carsArray.length < PAGE_LENGTH) {
-        for (let i = this.carsArray.length; i < items.length; i++) {
-          const newCarOnPage = new Car(this.carsList.element, items[i].name, items[i].color, items[i].id,
-            () => { this.changePageName(); this.updatePage(); });
-          this.carsArray.push(newCarOnPage);
-        }
-      } else {
-        this.replaceCars(this.page);
-        this.addMissingCars(this.page);
-      }
-      this.addSelectListener();
-    });
+    this.renderCars();
+    this.togglePaginationButtons();
+    this.changePageName();
+    this.garageControl.createCar.clearInputs();
   }
 }
