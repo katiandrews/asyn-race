@@ -1,24 +1,18 @@
 import { BaseComponent } from '../../../shared/baseComponent';
-import { Car } from '../../../shared/Car/Car';
 import { CarCreation } from './CarCreation';
 import { CarUpdate } from './CarUpdate';
 import { ControlButtons } from './ControlButtons';
 import './garageControl.scss';
 
 export class GarageControl extends BaseComponent {
-  public createCar: CarCreation = new CarCreation(this.element);
+  createCar: CarCreation = new CarCreation(this.element);
 
-  public updateCar: CarUpdate = new CarUpdate(this.element);
+  updateCar: CarUpdate = new CarUpdate(this.element);
 
-  private controlButtons: ControlButtons = new ControlButtons(this.element);
+  controlButtons: ControlButtons = new ControlButtons(this.element);
 
   constructor(node: HTMLElement) {
     super(node, 'form', ['garage-control']);
-  }
-
-  addCar(node: HTMLElement, carsArray: Car[], pageName: HTMLElement,
-    callback: () => void, selectCallback: () => void): void {
-    this.createCar.createCar(node, carsArray, pageName, callback, selectCallback);
   }
 
   insertSelectedCarInfo(name: string, color: string): void {

@@ -1,8 +1,10 @@
+import { generateRandomCar } from '../../shared/additionalFunctions/generateRandomCar';
 import { api } from '../../shared/api';
 import { BaseComponent } from '../../shared/baseComponent';
 import { Button } from '../../shared/button/button';
 import { Car } from '../../shared/Car/Car';
 import { CarModel } from '../../shared/models/car-model';
+import { CarProperties } from '../../shared/models/car-properties';
 import { GarageControl } from './Garage control/garageControl';
 import './garage.scss';
 
@@ -31,19 +33,20 @@ export class Garage extends BaseComponent {
     super(node, 'section', ['garage']);
     this.pageNumber.element.textContent = `Page #${this.page}`;
     this.renderGarage();
-    this.garageControl.addCar(this.carsList.element, this.carsArray, this.pageName.element,
-      () => { this.changePageName(); this.updatePage(); },
-      () => { this.addSelectListener(); });
+    this.addCreateCarListener();
     this.prevPage.element.addEventListener('click', () => this.changePage(this.prevPage));
     this.nextPage.element.addEventListener('click', () => this.changePage(this.nextPage));
-    this.element.addEventListener('click', () => this.togglePaginationButton());
+    this.element.addEventListener('click', () => this.togglePaginationButtons());
+    this.garageControl.controlButtons.generateCars.element.addEventListener('click', (event) => {
+      event.preventDefault();
+      this.addCars(100, () => generateRandomCar());
+    });
   }
 
   async renderGarage(): Promise<void> {
     this.renderCarsOnStart();
-    this.addSelectListener();
     this.changePageName();
-    this.togglePaginationButton();
+    this.togglePaginationButtons();
   }
 
   renderCarsOnStart(): void {
@@ -58,6 +61,32 @@ export class Garage extends BaseComponent {
         );
         this.carsArray.push(car);
       });
+      this.addSelectListener();
+    });
+  }
+
+  addSelectListener(): void {
+    this.carsArray.forEach((element) => {
+      element.onSelect(() => {
+        this.carsArray.forEach((el) => { el.selected = false; });
+        element.selected = true;
+        this.updateSelectedCar(element);
+      });
+    });
+  }
+
+  updateSelectedCar(element: Car):void {
+    api.getCar(element.id).then((result) => {
+      this.garageControl.insertSelectedCarInfo(result.name, result.color);
+      const carImage = element.element.querySelector('svg');
+      if (carImage) {
+        this.garageControl.updateCar.addUpdateListener(
+          element.selected,
+          result.id,
+          carImage,
+          element.name.element,
+        );
+      }
     });
   }
 
@@ -103,28 +132,10 @@ export class Garage extends BaseComponent {
     });
   }
 
-  addSelectListener(): void {
-    this.carsArray.forEach((element) => {
-      element.onSelect(() => {
-        this.carsArray.forEach((el) => { el.selected = false; });
-        element.selected = true;
-        this.updateSelectedCar(element);
-      });
-    });
-  }
-
-  updateSelectedCar(element: Car):void {
-    api.getCar(element.id).then((result) => {
-      this.garageControl.insertSelectedCarInfo(result.name, result.color);
-      const carImage = element.element.querySelector('svg');
-      if (carImage) {
-        this.garageControl.updateCar.addUpdateListener(
-          element.selected,
-          result.id,
-          carImage,
-          element.name.element,
-        );
-      }
+  addCreateCarListener(): void {
+    this.garageControl.createCar.button.element.addEventListener('click', (event) => {
+      event.preventDefault();
+      this.addCars(1, () => this.garageControl.createCar.getProperties());
     });
   }
 
@@ -146,7 +157,6 @@ export class Garage extends BaseComponent {
       this.changePageNumber(++this.page);
       this.removeExtraCars(this.page);
     }
-    this.togglePaginationButton();
     this.replaceCars(this.page);
   }
 
@@ -185,13 +195,36 @@ export class Garage extends BaseComponent {
     });
   }
 
-  togglePaginationButton(): void {
+  togglePaginationButtons(): void {
     if (this.page === 1) this.prevPage.element.disabled = true;
     if (this.page > 1) this.prevPage.element.disabled = false;
     api.getCars(this.page + 1).then(async (response) => {
       const items = await response.items;
       if (items.length === 0) this.nextPage.element.disabled = true;
       if (items.length > 0) this.nextPage.element.disabled = false;
+    });
+  }
+
+  addCars(quantity: number, getBody: () => CarProperties): void {
+    for (let i = 0; i < quantity; i++) {
+      api.createCar(getBody());
+      this.togglePaginationButtons();
+      this.changePageName();
+      this.garageControl.createCar.clearInputs();
+    }
+    api.getCars(this.page).then(async (cars) => {
+      const items = await cars.items;
+      if (this.carsArray.length < PAGE_LENGTH) {
+        for (let i = this.carsArray.length; i < items.length; i++) {
+          const newCarOnPage = new Car(this.carsList.element, items[i].name, items[i].color, items[i].id,
+            () => { this.changePageName(); this.updatePage(); });
+          this.carsArray.push(newCarOnPage);
+        }
+      } else {
+        this.replaceCars(this.page);
+        this.addMissingCars(this.page);
+      }
+      this.addSelectListener();
     });
   }
 }
