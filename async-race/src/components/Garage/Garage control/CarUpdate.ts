@@ -1,6 +1,7 @@
 import { api } from '../../../shared/api';
 import { BaseComponent } from '../../../shared/baseComponent';
 import { Button } from '../../../shared/button/button';
+import { Car } from '../../../shared/Car/Car';
 import { Input } from '../../../shared/input/input';
 
 export class CarUpdate extends BaseComponent {
@@ -27,9 +28,9 @@ export class CarUpdate extends BaseComponent {
     this.color.element.value = color;
   }
 
-  addUpdateListener(flag: boolean, id: number, carImage: SVGSVGElement, name: HTMLElement): void {
+  addUpdateListener(car: Car, id: number, carImage: SVGSVGElement, name: HTMLElement): void {
     this.button.element.addEventListener('click', (event) => {
-      if (flag) {
+      if (car.selected) {
         event.preventDefault();
         this.updateCar(id, carImage, name);
       }

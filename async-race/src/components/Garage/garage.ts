@@ -48,7 +48,7 @@ export class Garage extends BaseComponent {
     this.togglePaginationButtons();
   }
 
-   renderCars() {
+  renderCars(): void {
     api.getCars(this.page).then(async (cars) => {
       const items = await cars.items;
       if (this.carsArray.length < PAGE_LENGTH) {
@@ -81,7 +81,7 @@ export class Garage extends BaseComponent {
       const carImage = element.element.querySelector('svg');
       if (carImage) {
         this.garageControl.updateCar.addUpdateListener(
-          element.selected,
+          element,
           result.id,
           carImage,
           element.name.element,
