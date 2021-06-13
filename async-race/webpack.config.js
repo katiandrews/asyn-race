@@ -60,11 +60,6 @@ module.exports = ({ development }) => ({
     ...esLintPlugin(development),
     new MiniCssExtractPlugin({ filename: '[name].[contenthash].css' }),
     new HtmlWebpackPlugin({ title: 'Async Race' }),
-    new CopyPlugin({
-      patterns: [
-        { from: 'public' },
-      ],
-    }),
     new CleanWebpackPlugin({ cleanStaleWebpackAssets: false }),
   ],
   resolve: {
