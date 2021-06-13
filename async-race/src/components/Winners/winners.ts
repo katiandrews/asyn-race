@@ -19,8 +19,7 @@ export class Winners extends BaseComponent {
   constructor(node: HTMLElement) {
     super(node, 'section', ['winners']);
     this.pageNumber.element.textContent = `Page #${this.page}`;
-    this.changePageName()
-
+    this.changePageName();
   }
 
   changePageName(): void {

@@ -64,7 +64,7 @@ export class Api {
     return response.status !== 200 ? { success: false } : { ...await response.json() };
   }
 
-  async getWinners(page = 1, limit = 10, sort: string, order: string) {
+  async getWinners(page = 1, limit = 10, sort: string, order: string): Promise<CarsPage> {
     const response = await fetch(`${this.winners}?_page=${page}&_limit=${limit}&_sort=${sort}&_order=${order}`);
     return {
       items: await response.json(),

@@ -20,7 +20,7 @@ export class Car extends BaseComponent {
 
   selected = false;
 
-  carAnimation: number = 0;
+  carAnimation = 0;
 
   constructor(node: HTMLElement, name: string, color: string, id: number,
     callback: () => void) {
@@ -48,20 +48,20 @@ export class Car extends BaseComponent {
     callback();
   }
 
-  drive() {
-    this.engineControl.toggleStartButton();
+  drive(): void {
+    this.engineControl.toggleButton(this.engineControl.start);
     api.startEngine(this.id).then(async (respone) => {
-      this.engineControl.toggleStopButton();
+      this.engineControl.toggleButton(this.engineControl.stop);
       const time = respone.distance / respone.velocity;
       const start = Date.now();
-      this.carAnimation = requestAnimationFrame(() => {this.animate(time, start)});
-      api.driveCar(this.id).then(async(respone) => {
-        if (!respone.success) cancelAnimationFrame(this.carAnimation);
-      })
-    })
+      this.carAnimation = requestAnimationFrame(() => { this.animate(time, start); });
+      api.driveCar(this.id).then(async (result) => {
+        if (!result.success) cancelAnimationFrame(this.carAnimation);
+      });
+    });
   }
 
-  animate(duration: number, start: number) {
+  animate(duration: number, start: number): void {
     let timeFraction = (Date.now() - start) / duration;
     if (timeFraction > 1) timeFraction = 1;
 
@@ -72,12 +72,12 @@ export class Car extends BaseComponent {
     }
   }
 
-  stop() {
+  stop(): void {
     api.stopEngine(this.id).then(() => {
-      this.engineControl.toggleStartButton();
-    })
+      this.engineControl.toggleButton(this.engineControl.start);
+    });
     cancelAnimationFrame(this.carAnimation);
-    this.engineControl.toggleStopButton();
+    this.engineControl.toggleButton(this.engineControl.stop);
     this.car.element.style.left = '50px';
   }
 }
