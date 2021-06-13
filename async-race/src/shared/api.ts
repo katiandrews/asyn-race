@@ -63,6 +63,14 @@ export class Api {
     const response = await fetch(`${this.engine}?id=${id}&status=drive`).catch();
     return response.status !== 200 ? { success: false } : { ...await response.json() };
   }
+
+  async getWinners(page = 1, limit = 10, sort: string, order: string) {
+    const response = await fetch(`${this.winners}?_page=${page}&_limit=${limit}&_sort=${sort}&_order=${order}`);
+    return {
+      items: await response.json(),
+      count: Number(response.headers.get('X-Total-Count')),
+    };
+  }
 }
 
 export const api = new Api();

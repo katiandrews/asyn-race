@@ -1,4 +1,8 @@
 .winners {
-  font-size: 54px;
-  color: pink;
+  color: white;
+
+  & .pagination-buttons {
+    display: flex;
+    gap: 8px;
+  }
 }

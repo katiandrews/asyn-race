@@ -11,19 +11,21 @@ export class EngineControl extends BaseComponent {
     super(node, 'div', ['engine-control-buttons']);
   }
 
-  toggleStart() {
+  toggleStartButton() {
     if (this.start.element.disabled) {
       this.start.element.disabled = false;
     } else {
       this.start.element.disabled = true;
     }
+    this.start.element.classList.toggle('button_disabled');
   }
 
-  toggleStop() {
+  toggleStopButton() {
     if (this.stop.element.disabled) {
       this.stop.element.disabled = false;
     } else {
       this.stop.element.disabled = true;
     }
+    this.stop.element.classList.toggle('button_disabled');
   }
 }
