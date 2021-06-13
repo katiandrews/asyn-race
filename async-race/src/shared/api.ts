@@ -1,7 +1,7 @@
 import { CarModel } from './models/car-model';
 import { CarProperties } from './models/car-properties';
 import { CarsPage } from './models/Cars-page-model';
-import { DriveStatus } from './models/engineParam';
+import { DriveStatus, EngineParam } from './models/engineParam';
 
 export class Api {
   private base = 'http://127.0.0.1:3000';
@@ -50,7 +50,7 @@ export class Api {
     })).json();
   }
 
-  async startEngine(id: number): Promise<void> {
+  async startEngine(id: number): Promise<EngineParam> {
     const respone = await (fetch(`${this.engine}?id=${id}&status=started`));
     return respone.json();
   }
@@ -59,7 +59,7 @@ export class Api {
     (await (fetch(`${this.engine}?id=${id}&status=stopped`))).json();
   }
 
-  async drive(id: number): Promise<DriveStatus> {
+  async driveCar(id: number): Promise<DriveStatus> {
     const response = await fetch(`${this.engine}?id=${id}&status=drive`).catch();
     return response.status !== 200 ? { success: false } : { ...await response.json() };
   }

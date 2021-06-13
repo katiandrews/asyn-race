@@ -8,9 +8,10 @@
   background-repeat: repeat-x;
 
   & .car {
+    display: inline-block;
     position: relative;
     top: 30px;
-    left: 60px;
+    left: 50px;
   }
 
   & .car-name {
@@ -41,7 +42,7 @@
   & .finish-flag {
     position: absolute;
     top: 20px;
-    right: 10%;
+    left: 75%;
     width: 35px;
     height: 35px;
     background-image: url('../../assets/finish.png');

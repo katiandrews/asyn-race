@@ -4,6 +4,7 @@ import './Car.scss';
 import { CarControl } from './carControl';
 import { EngineControl } from './engineControl';
 import carImage from '../../assets/Car.svg';
+let carAnimation: number;
 
 export class Car extends BaseComponent {
   private flag = new BaseComponent(this.element, 'span', ['finish-flag']);
@@ -30,6 +31,7 @@ export class Car extends BaseComponent {
     this.id = id;
     this.name.element.textContent = `${name}`;
     this.carControls.remove.element.addEventListener('click', () => this.delete(callback));
+    this.engineControl.start.element.addEventListener('click', () => this.drive());
   }
 
   onSelect(callback: () => void): void {
@@ -42,5 +44,29 @@ export class Car extends BaseComponent {
     api.deleteCar(this.id);
     this.element.remove();
     callback();
+  }
+
+  drive() {
+    this.engineControl.toggleStart();
+    this.engineControl.toggleStop();
+    api.startEngine(this.id).then(async (respone) => {
+      const time = respone.distance / respone.velocity;
+      const start = Date.now();
+      carAnimation = requestAnimationFrame(() => {this.animate(time, start)});
+      api.driveCar(this.id).then(async(respone) => {
+        if (!respone.success) cancelAnimationFrame(carAnimation);
+      })
+    })
+  }
+
+  animate(duration: number, start: number) {
+  let timeFraction = (Date.now() - start) / duration;
+  if (timeFraction > 1) timeFraction = 1;
+
+  this.car.element.style.left = `calc(${timeFraction * 73}% + 50px)`;
+
+  if (timeFraction < 1) {
+    carAnimation = requestAnimationFrame(() => this.animate(duration, start));
+  }
   }
 }
