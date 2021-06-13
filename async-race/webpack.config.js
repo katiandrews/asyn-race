@@ -35,12 +35,16 @@ module.exports = ({ development }) => ({
         exclude: /node_modules/,
       },
       {
-        test: /\.(?:ico|gif|png|jpg|jpeg|svg)$/i,
+        test: /\.svg$/i,
+        type: 'asset/source',
+      },
+      {
+        test: /\.(?:ico|gif|png|jpg|jpeg)$/i,
         type: 'asset/resource',
       },
       {
         test: /\.(woff(2)?|eot|ttf|otf)$/i,
-        type: 'asset/resource',
+        type: 'asset/source',
       },
       {
         test: /\.css$/i,
