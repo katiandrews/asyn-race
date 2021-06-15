@@ -42,4 +42,9 @@ export class Winners extends BaseComponent {
       });
     });
   }
+
+  updatePage() {
+    this.renderWinners();
+    this.changePageName();
+  }
 }

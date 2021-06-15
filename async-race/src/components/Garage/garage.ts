@@ -43,8 +43,8 @@ export class Garage extends BaseComponent {
       event.preventDefault();
       this.addCars(100, () => generateRandomCar());
     });
-    this.garageControl.controlButtons.race.element.addEventListener('click', () => { this.startRace() });
-    this.garageControl.controlButtons.reset.element.addEventListener('click', () => { this.resetRace() });
+    this.garageControl.controlButtons.race.element.addEventListener('click', () => { this.startRace(); });
+    this.garageControl.controlButtons.reset.element.addEventListener('click', () => { this.resetRace(); });
   }
 
   async renderGarage(): Promise<void> {
@@ -224,26 +224,39 @@ export class Garage extends BaseComponent {
     const promiseArray: Promise<WinnerMessage>[] = [];
     this.carsArray.forEach((car) => {
       promiseArray.push(car.drive());
-    })
+    });
     Promise.race(promiseArray).then((winner) => {
       this.garageControl.controlButtons.reset.element.disabled = false;
+      this.updateWinners(winner);
       this.showWinMessage(winner);
+    });
+  }
+
+  updateWinners(winner: WinnerMessage) {
+    api.getWinner(winner.id).then((result) => {
+      if (Object.keys(result).length === 0) {
+        api.createWinner({id: winner.id, wins: 1, time: winner.time});
+      } else {
+        const wins = result.wins++;
+        if (result.time < winner.time) api.updateWinner(winner.id, {wins: wins, time: result.time});
+        else api.updateWinner(winner.id, {wins: wins, time: winner.time});
+      }
     })
   }
 
-  resetRace() {
+  resetRace(): void {
     this.garageControl.controlButtons.reset.element.disabled = true;
     this.winMessage.element.classList.add('visually-hidden');
     const promiseArray: Promise<void>[] = [];
     this.carsArray.forEach((car) => {
       promiseArray.push(car.stop());
-    })
+    });
     Promise.all(promiseArray).then(() => {
       this.garageControl.controlButtons.race.element.disabled = false;
-    })
+    });
   }
 
-  showWinMessage(winner: WinnerMessage) {
+  showWinMessage(winner: WinnerMessage): void {
     this.winMessage.element.classList.remove('visually-hidden');
     this.winMessage.element.textContent = `${winner.name} won first (${(winner.time / 1000).toFixed(2)}s)`;
   }

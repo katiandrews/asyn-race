@@ -24,6 +24,7 @@ export class App {
   toWinners(): void {
     window.location.hash = '#/winners';
     this.garage.element.remove();
+    this.winners.updatePage();
     this.main.element.appendChild(this.winners.element);
   }
 }

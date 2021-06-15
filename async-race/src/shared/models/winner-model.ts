@@ -4,7 +4,13 @@ export interface WinnerModel {
   time: number;
 }
 
+export interface UpdateWinner {
+  wins: number;
+  time: number;
+}
+
 export interface WinnerMessage {
+  id: number;
   name: string | null;
   time: number;
 }

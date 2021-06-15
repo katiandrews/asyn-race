@@ -8,6 +8,8 @@ export class ControlButtons extends BaseComponent {
 
   generateCars: Button = new Button(this.element, ['button', 'button_blue'], 'Generate Cars', false);
 
+  classDisabled = 'button_disabled';
+
   constructor(node: HTMLElement) {
     super(node, 'div', ['control-buttons']);
   }
@@ -18,5 +20,6 @@ export class ControlButtons extends BaseComponent {
     } else {
       button.element.disabled = true;
     }
+    button.element.classList.add(`${this.classDisabled}`);
   }
 }

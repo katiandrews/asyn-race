@@ -2,6 +2,7 @@ import { CarModel } from './models/car-model';
 import { CarProperties } from './models/car-properties';
 import { CarsPage } from './models/Cars-page-model';
 import { DriveStatus, EngineParam } from './models/engineParam';
+import { UpdateWinner, WinnerModel } from './models/winner-model';
 import { WinnersPage } from './models/winnersPage-model';
 
 export class Api {
@@ -71,6 +72,37 @@ export class Api {
       items: await response.json(),
       count: Number(response.headers.get('X-Total-Count')),
     };
+  }
+
+  async getWinner(id: number): Promise<WinnerModel> {
+    const response = await fetch(`${this.winners}/${id}`)
+    return response.json();
+  }
+
+  async createWinner(body: WinnerModel): Promise<WinnerModel> {
+    const response = await fetch(this.winners, {
+      method: 'POST',
+      body: JSON.stringify(body),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    return response.json();
+  }
+
+  async updateWinner(id: number, body: UpdateWinner): Promise<WinnerModel> {
+    const response = await fetch(`${this.winners}/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(body),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    return response.json();
+  }
+
+  async deleteWinner(id: number) {
+    (await fetch(`${this.winners}/${id}`, { method: 'DELETE' })).json();
   }
 }
 

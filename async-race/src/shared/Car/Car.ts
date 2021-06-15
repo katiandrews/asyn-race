@@ -45,6 +45,7 @@ export class Car extends BaseComponent {
 
   delete(callback: () => void): void {
     api.deleteCar(this.id);
+    api.deleteWinner(this.id);
     this.element.remove();
     callback();
   }
@@ -61,20 +62,21 @@ export class Car extends BaseComponent {
           if (!result.success) cancelAnimationFrame(this.carAnimation);
           else {
             resolve({
+              id: this.id,
               name: this.name.element.textContent,
-              time: time,
+              time,
             });
           }
         });
+      });
     });
-    })
   }
 
   animate(duration: number, start: number): void {
     let timeFraction = (Date.now() - start) / duration;
     if (timeFraction > 1) {
       timeFraction = 1;
-    };
+    }
 
     this.car.element.style.left = `calc(${timeFraction * 73}% + 50px)`;
 
@@ -92,6 +94,6 @@ export class Car extends BaseComponent {
       cancelAnimationFrame(this.carAnimation);
       this.engineControl.toggleButton(this.engineControl.stop);
       this.car.element.style.left = '50px';
-    })
+    });
   }
 }
