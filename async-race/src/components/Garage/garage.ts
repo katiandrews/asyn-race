@@ -6,6 +6,7 @@ import { Car } from '../../shared/Car/Car';
 import { PAGE_LENGTH } from '../../shared/constants';
 import { CarModel } from '../../shared/models/car-model';
 import { CarProperties } from '../../shared/models/car-properties';
+import { WinnerMessage } from '../../shared/models/winner-model';
 import { GarageControl } from './Garage control/garageControl';
 import './garage.scss';
 
@@ -28,6 +29,8 @@ export class Garage extends BaseComponent {
 
   private page = 1;
 
+  private winMessage = new BaseComponent(this.element, 'p', ['win-message-container', 'visually-hidden']);
+
   constructor(node: HTMLElement) {
     super(node, 'section', ['garage']);
     this.pageNumber.element.textContent = `Page #${this.page}`;
@@ -40,6 +43,8 @@ export class Garage extends BaseComponent {
       event.preventDefault();
       this.addCars(100, () => generateRandomCar());
     });
+    this.garageControl.controlButtons.race.element.addEventListener('click', () => { this.startRace() });
+    this.garageControl.controlButtons.reset.element.addEventListener('click', () => { this.resetRace() });
   }
 
   async renderGarage(): Promise<void> {
@@ -211,5 +216,35 @@ export class Garage extends BaseComponent {
     this.togglePaginationButtons();
     this.changePageName();
     this.garageControl.createCar.clearInputs();
+  }
+
+  async startRace(): Promise<void> {
+    this.garageControl.controlButtons.race.element.disabled = true;
+    this.garageControl.controlButtons.reset.element.disabled = true;
+    const promiseArray: Promise<WinnerMessage>[] = [];
+    this.carsArray.forEach((car) => {
+      promiseArray.push(car.drive());
+    })
+    Promise.race(promiseArray).then((winner) => {
+      this.garageControl.controlButtons.reset.element.disabled = false;
+      this.showWinMessage(winner);
+    })
+  }
+
+  resetRace() {
+    this.garageControl.controlButtons.reset.element.disabled = true;
+    this.winMessage.element.classList.add('visually-hidden');
+    const promiseArray: Promise<void>[] = [];
+    this.carsArray.forEach((car) => {
+      promiseArray.push(car.stop());
+    })
+    Promise.all(promiseArray).then(() => {
+      this.garageControl.controlButtons.race.element.disabled = false;
+    })
+  }
+
+  showWinMessage(winner: WinnerMessage) {
+    this.winMessage.element.classList.remove('visually-hidden');
+    this.winMessage.element.textContent = `${winner.name} won first (${(winner.time / 1000).toFixed(2)}s)`;
   }
 }

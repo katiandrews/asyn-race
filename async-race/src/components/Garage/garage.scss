@@ -1,5 +1,6 @@
 .garage {
   color: white;
+  position: relative;
 
   & .cars-list {
     display: flex;
@@ -14,6 +15,23 @@
   & .pagination-buttons {
     display: flex;
     gap: 8px;
+  }
+
+  & .visually-hidden {
+    visibility: hidden;
+  }
+
+  & .win-message-container {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    width: 100%;
+    top: 50%;
+    color: rgb(211, 108, 211);
+    font-size: 32px;
+    z-index: 1;
+    text-shadow: 1px -2px 3px rgb(165, 107, 190);
   }
 }
 

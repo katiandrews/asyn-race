@@ -3,3 +3,8 @@ export interface WinnerModel {
   wins: number;
   time: number;
 }
+
+export interface WinnerMessage {
+  name: string | null;
+  time: number;
+}

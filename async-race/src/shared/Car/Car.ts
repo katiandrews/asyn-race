@@ -4,6 +4,7 @@ import './Car.scss';
 import { CarControl } from './carControl';
 import { EngineControl } from './engineControl';
 import carImage from '../../assets/car.svg';
+import { WinnerMessage } from '../models/winner-model';
 
 export class Car extends BaseComponent {
   private flag = new BaseComponent(this.element, 'span', ['finish-flag']);
@@ -32,7 +33,7 @@ export class Car extends BaseComponent {
     this.id = id;
     this.name.element.textContent = `${name}`;
     this.carControls.remove.element.addEventListener('click', () => this.delete(callback));
-    this.engineControl.start.element.addEventListener('click', () => this.drive());
+    this.engineControl.start.element.addEventListener('click', () => this.drive().catch(() => {}));
     this.engineControl.stop.element.addEventListener('click', () => this.stop());
   }
 
@@ -48,22 +49,32 @@ export class Car extends BaseComponent {
     callback();
   }
 
-  drive(): void {
-    this.engineControl.toggleButton(this.engineControl.start);
-    api.startEngine(this.id).then(async (respone) => {
-      this.engineControl.toggleButton(this.engineControl.stop);
-      const time = respone.distance / respone.velocity;
-      const start = Date.now();
-      this.carAnimation = requestAnimationFrame(() => { this.animate(time, start); });
-      api.driveCar(this.id).then(async (result) => {
-        if (!result.success) cancelAnimationFrame(this.carAnimation);
-      });
+  drive(): Promise<WinnerMessage> {
+    return new Promise((resolve) => {
+      this.engineControl.toggleButton(this.engineControl.start);
+      api.startEngine(this.id).then(async (response) => {
+        this.engineControl.toggleButton(this.engineControl.stop);
+        const time = response.distance / response.velocity;
+        const start = Date.now();
+        this.carAnimation = requestAnimationFrame(() => { this.animate(time, start); });
+        api.driveCar(this.id).then(async (result) => {
+          if (!result.success) cancelAnimationFrame(this.carAnimation);
+          else {
+            resolve({
+              name: this.name.element.textContent,
+              time: time,
+            });
+          }
+        });
     });
+    })
   }
 
   animate(duration: number, start: number): void {
     let timeFraction = (Date.now() - start) / duration;
-    if (timeFraction > 1) timeFraction = 1;
+    if (timeFraction > 1) {
+      timeFraction = 1;
+    };
 
     this.car.element.style.left = `calc(${timeFraction * 73}% + 50px)`;
 
@@ -72,12 +83,15 @@ export class Car extends BaseComponent {
     }
   }
 
-  stop(): void {
-    api.stopEngine(this.id).then(() => {
-      this.engineControl.toggleButton(this.engineControl.start);
-    });
-    cancelAnimationFrame(this.carAnimation);
-    this.engineControl.toggleButton(this.engineControl.stop);
-    this.car.element.style.left = '50px';
+  stop(): Promise<void> {
+    return new Promise((resolve) => {
+      api.stopEngine(this.id).then(() => {
+        this.engineControl.toggleButton(this.engineControl.start);
+        resolve();
+      });
+      cancelAnimationFrame(this.carAnimation);
+      this.engineControl.toggleButton(this.engineControl.stop);
+      this.car.element.style.left = '50px';
+    })
   }
 }
