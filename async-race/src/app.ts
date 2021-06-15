@@ -16,11 +16,13 @@ export class App {
   }
 
   toGarage(): void {
+    window.location.hash = '#/garage';
     this.winners.element.remove();
     this.main.element.appendChild(this.garage.element);
   }
 
   toWinners(): void {
+    window.location.hash = '#/winners';
     this.garage.element.remove();
     this.main.element.appendChild(this.winners.element);
   }

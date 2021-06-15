@@ -2,6 +2,7 @@ import { CarModel } from './models/car-model';
 import { CarProperties } from './models/car-properties';
 import { CarsPage } from './models/Cars-page-model';
 import { DriveStatus, EngineParam } from './models/engineParam';
+import { WinnersPage } from './models/winnersPage-model';
 
 export class Api {
   private base = 'http://127.0.0.1:3000';
@@ -64,7 +65,7 @@ export class Api {
     return response.status !== 200 ? { success: false } : { ...await response.json() };
   }
 
-  async getWinners(page = 1, limit = 10, sort: string, order: string): Promise<CarsPage> {
+  async getWinners(page = 1, limit = 10, sort: string, order: string): Promise<WinnersPage> {
     const response = await fetch(`${this.winners}?_page=${page}&_limit=${limit}&_sort=${sort}&_order=${order}`);
     return {
       items: await response.json(),

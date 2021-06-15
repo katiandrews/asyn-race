@@ -5,4 +5,17 @@
     display: flex;
     gap: 8px;
   }
+
+  .winners-table {
+    border-collapse: collapse;
+
+    & .winners-table_header {
+    background-color: rgb(92, 92, 218);
+  }
+
+    & .winners-table_cell {
+      padding: 4px 8px;
+    }
+  }
+
 }

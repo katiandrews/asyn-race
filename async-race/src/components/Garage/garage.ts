@@ -196,10 +196,10 @@ export class Garage extends BaseComponent {
   }
 
   togglePaginationButtons(): void {
-    this.prevPage.element.disabled = this.page === 1 ? true : false;
+    this.prevPage.element.disabled = this.page === 1;
     api.getCars(this.page + 1).then(async (response) => {
       const items = await response.items;
-      this.nextPage.element.disabled = items.length === 0 ? true : false;
+      this.nextPage.element.disabled = items.length === 0;
     });
   }
 

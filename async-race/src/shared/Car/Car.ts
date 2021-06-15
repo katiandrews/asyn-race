@@ -3,7 +3,7 @@ import { BaseComponent } from '../baseComponent';
 import './Car.scss';
 import { CarControl } from './carControl';
 import { EngineControl } from './engineControl';
-import carImage from '../../assets/Car.svg';
+import carImage from '../../assets/car.svg';
 
 export class Car extends BaseComponent {
   private flag = new BaseComponent(this.element, 'span', ['finish-flag']);
