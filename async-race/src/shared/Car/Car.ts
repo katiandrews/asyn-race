@@ -64,7 +64,7 @@ export class Car extends BaseComponent {
             resolve({
               id: this.id,
               name: this.name.element.textContent,
-              time,
+              time: Number((time / 1000).toFixed(2)),
             });
           }
         });

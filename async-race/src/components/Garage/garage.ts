@@ -31,6 +31,8 @@ export class Garage extends BaseComponent {
 
   private winMessage = new BaseComponent(this.element, 'p', ['win-message-container', 'visually-hidden']);
 
+  private winner: WinnerMessage = { id: 0, name: null, time: 0 };
+
   constructor(node: HTMLElement) {
     super(node, 'section', ['garage']);
     this.pageNumber.element.textContent = `Page #${this.page}`;
@@ -226,22 +228,23 @@ export class Garage extends BaseComponent {
       promiseArray.push(car.drive());
     });
     Promise.race(promiseArray).then((winner) => {
+      this.winner = winner;
       this.garageControl.controlButtons.reset.element.disabled = false;
-      this.updateWinners(winner);
+      this.updateWinners();
       this.showWinMessage(winner);
     });
   }
 
-  updateWinners(winner: WinnerMessage) {
-    api.getWinner(winner.id).then((result) => {
+  updateWinners(): void {
+    api.getWinner(this.winner.id).then((result) => {
       if (Object.keys(result).length === 0) {
-        api.createWinner({id: winner.id, wins: 1, time: winner.time});
+        api.createWinner({ id: this.winner.id, wins: 1, time: this.winner.time });
       } else {
-        const wins = result.wins++;
-        if (result.time < winner.time) api.updateWinner(winner.id, {wins: wins, time: result.time});
-        else api.updateWinner(winner.id, {wins: wins, time: winner.time});
+        const wins = ++result.wins;
+        if (result.time < this.winner.time) api.updateWinner(this.winner.id, { wins, time: result.time });
+        else api.updateWinner(this.winner.id, { wins, time: this.winner.time });
       }
-    })
+    });
   }
 
   resetRace(): void {
@@ -258,6 +261,6 @@ export class Garage extends BaseComponent {
 
   showWinMessage(winner: WinnerMessage): void {
     this.winMessage.element.classList.remove('visually-hidden');
-    this.winMessage.element.textContent = `${winner.name} won first (${(winner.time / 1000).toFixed(2)}s)`;
+    this.winMessage.element.textContent = `${winner.name} won first (${winner.time}s)`;
   }
 }

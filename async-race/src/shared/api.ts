@@ -66,7 +66,7 @@ export class Api {
     return response.status !== 200 ? { success: false } : { ...await response.json() };
   }
 
-  async getWinners(page = 1, limit = 10, sort: string, order: string): Promise<WinnersPage> {
+  async getWinners(page = 1, limit = 10, sort = 'id', order = 'ASC'): Promise<WinnersPage> {
     const response = await fetch(`${this.winners}?_page=${page}&_limit=${limit}&_sort=${sort}&_order=${order}`);
     return {
       items: await response.json(),
@@ -75,7 +75,7 @@ export class Api {
   }
 
   async getWinner(id: number): Promise<WinnerModel> {
-    const response = await fetch(`${this.winners}/${id}`)
+    const response = await fetch(`${this.winners}/${id}`);
     return response.json();
   }
 
@@ -101,7 +101,7 @@ export class Api {
     return response.json();
   }
 
-  async deleteWinner(id: number) {
+  async deleteWinner(id: number): Promise<void> {
     (await fetch(`${this.winners}/${id}`, { method: 'DELETE' })).json();
   }
 }

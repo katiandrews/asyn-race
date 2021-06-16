@@ -24,6 +24,8 @@ export class Winners extends BaseComponent {
     this.pageNumber.element.textContent = `Page #${this.page}`;
     this.changePageName();
     this.renderWinners();
+    this.nextPage.element.addEventListener('click', () => this.changePage(this.nextPage));
+    this.prevPage.element.addEventListener('click', () => this.changePage(this.prevPage));
   }
 
   changePageName(): void {
@@ -37,14 +39,40 @@ export class Winners extends BaseComponent {
       const winners = await result.items;
       winners.forEach((winner) => {
         api.getCar(winner.id).then((car) => {
-          this.winners.addTableRow(winner.id, car.color, car.name, winner.wins, winner.time);
+          this.winners.addTableRow(winner, car);
         });
       });
     });
   }
 
-  updatePage() {
+  updatePage(): void {
+    this.winners.element.innerHTML = '';
+    this.winners.addTableHeader();
     this.renderWinners();
     this.changePageName();
+    this.togglePaginationButtons();
+  }
+
+  togglePaginationButtons(): void {
+    this.prevPage.element.disabled = this.page === 1;
+    api.getWinners(this.page + 1).then(async (response) => {
+      const items = await response.items;
+      this.nextPage.element.disabled = items.length === 0;
+    });
+  }
+
+  changePageNumber(num: number): void {
+    this.pageNumber.element.textContent = `Page #${num}`;
+  }
+
+  changePage(direction: Button): void {
+    if (direction === this.prevPage) {
+      this.changePageNumber(--this.page);
+      this.updatePage();
+    } else if (direction === this.nextPage) {
+      this.changePageNumber(++this.page);
+      this.updatePage();
+    }
+    this.togglePaginationButtons();
   }
 }
