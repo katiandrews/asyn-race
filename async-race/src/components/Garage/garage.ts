@@ -33,6 +33,10 @@ export class Garage extends BaseComponent {
 
   private winner: IWinnerData = { id: 0, name: null, time: 0 };
 
+  private createCarBtn = this.garageControl.createCar.button.element;
+
+  private generateCarsBtn = this.garageControl.controlButtons.generateCars.element;
+
   constructor(node: HTMLElement) {
     super(node, 'section', ['garage']);
     this.pageText.element.textContent = `Page #${this.pageNumber}`;
@@ -41,7 +45,7 @@ export class Garage extends BaseComponent {
     this.prevPageBtn.element.addEventListener('click', () => this.changePage(this.prevPageBtn));
     this.nextPageBtn.element.addEventListener('click', () => this.changePage(this.nextPageBtn));
     this.element.addEventListener('click', () => this.updatePaginationButtons());
-    this.garageControl.controlButtons.generateCars.element.addEventListener('click', (event) => {
+    this.generateCarsBtn.addEventListener('click', (event) => {
       event.preventDefault();
       this.addCars(100, () => generateRandomCar());
     });
@@ -51,7 +55,7 @@ export class Garage extends BaseComponent {
 
   renderGarage(): void {
     this.renderCars();
-    this.changePageName();
+    this.updatePageName();
     this.updatePaginationButtons();
   }
 
@@ -61,7 +65,7 @@ export class Garage extends BaseComponent {
       if (this.carsArray.length < PAGE_LENGTH) {
         for (let i = this.carsArray.length; i < items.length; i++) {
           const newCarOnPage = new Car(this.carsList.element, items[i].name, items[i].color, items[i].id,
-            () => { this.changePageName(); this.updatePage(); });
+            () => { this.updatePageName(); this.updatePage(); });
           this.carsArray.push(newCarOnPage);
         }
       } else {
@@ -113,7 +117,7 @@ export class Garage extends BaseComponent {
       this.carsList.element,
       lastElement.name, lastElement.color,
       lastElement.id,
-      () => { this.changePageName(); this.updatePage(); },
+      () => { this.updatePageName(); this.updatePage(); },
     );
     this.carsArray.push(car);
     this.updateCarsArray();
@@ -137,13 +141,13 @@ export class Garage extends BaseComponent {
   }
 
   addCreateCarListener(): void {
-    this.garageControl.createCar.button.element.addEventListener('click', (event) => {
+    this.createCarBtn.addEventListener('click', (event) => {
       event.preventDefault();
       this.addCars(1, () => this.garageControl.createCar.getProperties());
     });
   }
 
-  changePageName(): void {
+  updatePageName(): void {
     api.getCars(this.pageNumber).then((result) => {
       this.pageName.element.textContent = `Garage (${result.count})`;
     });
@@ -215,7 +219,7 @@ export class Garage extends BaseComponent {
     await Promise.all(newCars);
     this.renderCars();
     this.updatePaginationButtons();
-    this.changePageName();
+    this.updatePageName();
     this.garageControl.createCar.clearInputs();
   }
 
@@ -246,16 +250,15 @@ export class Garage extends BaseComponent {
     });
   }
 
-  resetRace(): void {
+  async resetRace(): Promise<void> {
     this.garageControl.controlButtons.reset.element.disabled = true;
     this.winMessage.element.classList.add('visually-hidden');
     const promiseArray: Promise<void>[] = [];
     this.carsArray.forEach((car) => {
       promiseArray.push(car.stop());
     });
-    Promise.all(promiseArray).then(() => {
-      this.garageControl.controlButtons.race.element.disabled = false;
-    });
+    await Promise.all(promiseArray);
+    this.garageControl.controlButtons.race.element.disabled = false;
   }
 
   showWinMessage(winner: IWinnerData): void {

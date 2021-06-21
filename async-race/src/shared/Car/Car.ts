@@ -79,9 +79,7 @@ export class Car extends BaseComponent {
     if (timeFraction > 1) {
       timeFraction = 1;
     }
-
     this.car.element.style.left = `calc(${timeFraction * 73}% + 50px)`;
-
     if (timeFraction < 1) {
       this.carAnimation = requestAnimationFrame(() => this.animate(duration, start));
     }
