@@ -69,7 +69,7 @@ class Api {
 
   async driveCar(id: number): Promise<IDriveStatus> {
     const response = await fetch(`${this.engine}?id=${id}&status=drive`).catch();
-    return response.status !== 200 ? { success: false } : { ...response.json() };
+    return response.status !== 200 ? { success: false } : { success: true };
   }
 
   async getWinners(page = 1, limit = 10, sort = SortParams.id, order = SortOrder.fromLowest): Promise<IWinners> {

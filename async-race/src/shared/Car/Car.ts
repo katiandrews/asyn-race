@@ -58,7 +58,7 @@ export class Car extends BaseComponent {
         const time = response.distance / response.velocity;
         const start = Date.now();
         this.carAnimation = requestAnimationFrame(() => { this.animate(time, start); });
-        api.driveCar(this.id).then(async (result) => {
+        api.driveCar(this.id).then((result) => {
           if (!result.success) cancelAnimationFrame(this.carAnimation);
           else {
             resolve({

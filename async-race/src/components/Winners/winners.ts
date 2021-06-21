@@ -9,9 +9,9 @@ import './winners.scss';
 export class Winners extends BaseComponent {
   private pageName = new BaseComponent(this.element, 'h1', ['page-title']);
 
-  private pageNumber = new BaseComponent(this.element, 'h2', ['page-number']);
+  private pageText = new BaseComponent(this.element, 'h2', ['page-number']);
 
-  private page = 1;
+  private pageNumber = 1;
 
   winners = new WinnersTable(this.element);
 
@@ -23,22 +23,22 @@ export class Winners extends BaseComponent {
 
   constructor(node: HTMLElement) {
     super(node, 'section', ['winners']);
-    this.pageNumber.element.textContent = `Page #${this.page}`;
-    this.changePageName();
+    this.pageText.element.textContent = `Page #${this.pageNumber}`;
+    this.updatePageName();
     this.renderWinners();
     this.nextPage.element.addEventListener('click', () => this.changePage(this.nextPage));
     this.prevPage.element.addEventListener('click', () => this.changePage(this.prevPage));
   }
 
-  changePageName(): void {
-    api.getWinners(this.page, 10, SortParams.id, SortOrder.fromLowest).then((result) => {
+  updatePageName(): void {
+    api.getWinners(this.pageNumber, 10, SortParams.id, SortOrder.fromLowest).then((result) => {
       this.pageName.element.textContent = `Winners (${result.count})`;
     });
   }
 
   renderWinners(): void {
-    api.getWinners(this.page, 10, SortParams.id, SortOrder.fromLowest).then(async (result) => {
-      const winners = await result.items;
+    api.getWinners(this.pageNumber, 10, SortParams.id, SortOrder.fromLowest).then(async (result) => {
+      const winners = result.items;
       winners.forEach((winner) => {
         api.getCar(winner.id).then((car) => {
           this.winners.addTableRow(winner, car);
@@ -51,30 +51,30 @@ export class Winners extends BaseComponent {
     this.winners.element.innerHTML = '';
     this.winners.addTableHeader();
     this.renderWinners();
-    this.changePageName();
-    this.togglePaginationButtons();
+    this.updatePageName();
+    this.updatePaginationButtons();
   }
 
-  togglePaginationButtons(): void {
-    this.prevPage.element.disabled = this.page === 1;
-    api.getWinners(this.page + 1).then(async (response) => {
-      const items = await response.items;
+  updatePaginationButtons(): void {
+    this.prevPage.element.disabled = this.pageNumber === 1;
+    api.getWinners(this.pageNumber + 1).then(async (response) => {
+      const items = response.items;
       this.nextPage.element.disabled = items.length === 0;
     });
   }
 
-  changePageNumber(num: number): void {
-    this.pageNumber.element.textContent = `Page #${num}`;
+  renderPageNumber(num: number): void {
+    this.pageText.element.textContent = `Page #${num}`;
   }
 
   changePage(direction: Button): void {
     if (direction === this.prevPage) {
-      this.changePageNumber(--this.page);
+      this.renderPageNumber(--this.pageNumber);
       this.updatePage();
     } else if (direction === this.nextPage) {
-      this.changePageNumber(++this.page);
+      this.renderPageNumber(++this.pageNumber);
       this.updatePage();
     }
-    this.togglePaginationButtons();
+    this.updatePaginationButtons();
   }
 }

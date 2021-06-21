@@ -11,7 +11,11 @@ export class WinnersTable extends BaseComponent<HTMLTableElement> {
 
   constructor(node: HTMLElement) {
     super(node, 'table', ['winners-table']);
-    this.addTableHeader();
+    this.tableHeader.tdNumber.element.textContent = 'Number';
+    this.tableHeader.tdCar.element.textContent = 'Car';
+    this.tableHeader.tdName.element.textContent = 'Name';
+    this.tableHeader.tdWins.element.textContent = 'Wins';
+    this.tableHeader.tdBestTime.element.textContent = 'Best time';
   }
 
   addTableRow(winner: IWinner, car: ICarModel): void {
@@ -30,11 +34,6 @@ export class WinnersTable extends BaseComponent<HTMLTableElement> {
   }
 
   addTableHeader(): void {
-    this.tableHeader = new TableRow(this.element, 'tr', ['winners-table_header']);
-    this.tableHeader.tdNumber.element.textContent = 'Number';
-    this.tableHeader.tdCar.element.textContent = 'Car';
-    this.tableHeader.tdName.element.textContent = 'Name';
-    this.tableHeader.tdWins.element.textContent = 'Wins';
-    this.tableHeader.tdBestTime.element.textContent = 'Best time';
+    this.element.appendChild(this.tableHeader.element);
   }
 }
