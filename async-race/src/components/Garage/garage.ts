@@ -33,10 +33,6 @@ export class Garage extends BaseComponent {
 
   private winner: IWinnerData = { id: 0, name: null, time: 0 };
 
-  private createCarBtn = this.garageControl.createCar.button.element;
-
-  private generateCarsBtn = this.garageControl.controlButtons.generateCars.element;
-
   constructor(node: HTMLElement) {
     super(node, 'section', ['garage']);
     this.pageText.element.textContent = `Page #${this.pageNumber}`;
@@ -45,12 +41,15 @@ export class Garage extends BaseComponent {
     this.prevPageBtn.element.addEventListener('click', () => this.changePage(this.prevPageBtn));
     this.nextPageBtn.element.addEventListener('click', () => this.changePage(this.nextPageBtn));
     this.element.addEventListener('click', () => this.updatePaginationButtons());
-    this.generateCarsBtn.addEventListener('click', (event) => {
+    const { generateCars } = this.garageControl.controlButtons;
+    const { race } = this.garageControl.controlButtons;
+    const { reset } = this.garageControl.controlButtons;
+    generateCars.element.addEventListener('click', (event) => {
       event.preventDefault();
       this.addCars(100, () => generateRandomCar());
     });
-    this.garageControl.controlButtons.race.element.addEventListener('click', () => { this.startRace(); });
-    this.garageControl.controlButtons.reset.element.addEventListener('click', () => { this.resetRace(); });
+    race.element.addEventListener('click', () => { this.startRace(); });
+    reset.element.addEventListener('click', () => { this.resetRace(); });
   }
 
   renderGarage(): void {
@@ -141,7 +140,8 @@ export class Garage extends BaseComponent {
   }
 
   addCreateCarListener(): void {
-    this.createCarBtn.addEventListener('click', (event) => {
+    const createCarBtn = this.garageControl.createCar.button.element;
+    createCarBtn.addEventListener('click', (event) => {
       event.preventDefault();
       this.addCars(1, () => this.garageControl.createCar.getProperties());
     });
