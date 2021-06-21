@@ -4,7 +4,7 @@ import './Car.scss';
 import { CarControl } from './carControl';
 import { EngineControl } from './engineControl';
 import carImage from '../../assets/car.svg';
-import { WinnerMessage } from '../models/winner-model';
+import { IWinnerData } from '../models/winner-model';
 
 export class Car extends BaseComponent {
   private flag = new BaseComponent(this.element, 'span', ['finish-flag']);
@@ -50,7 +50,7 @@ export class Car extends BaseComponent {
     callback();
   }
 
-  drive(): Promise<WinnerMessage> {
+  drive(): Promise<IWinnerData> {
     return new Promise((resolve) => {
       this.engineControl.toggleButton(this.engineControl.start);
       api.startEngine(this.id).then(async (response) => {

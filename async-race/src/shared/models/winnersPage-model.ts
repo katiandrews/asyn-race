@@ -1,6 +1,6 @@
-import { WinnerModel } from './winner-model';
+import { IWinner } from './winner-model';
 
-export interface WinnersPage {
-  items: WinnerModel[];
+export interface IWinners {
+  items: IWinner[];
   count: number;
 }

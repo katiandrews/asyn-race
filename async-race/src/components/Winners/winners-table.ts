@@ -1,8 +1,8 @@
 import { BaseComponent } from '../../shared/baseComponent';
 import { TableRow } from './table-cell';
 import carImage from '../../assets/car.svg';
-import { WinnerModel } from '../../shared/models/winner-model';
-import { CarModel } from '../../shared/models/car-model';
+import { IWinner } from '../../shared/models/winner-model';
+import { ICarModel } from '../../shared/models/car-model';
 
 export class WinnersTable extends BaseComponent<HTMLTableElement> {
   private tableHeader: TableRow = new TableRow(this.element, 'tr', ['winners-table_header']);
@@ -14,7 +14,7 @@ export class WinnersTable extends BaseComponent<HTMLTableElement> {
     this.addTableHeader();
   }
 
-  addTableRow(winner: WinnerModel, car: CarModel): void {
+  addTableRow(winner: IWinner, car: ICarModel): void {
     const tableRow = new TableRow(this.element);
     tableRow.tdNumber.element.textContent = `${winner.id}`;
     tableRow.tdCar.element.innerHTML = carImage;

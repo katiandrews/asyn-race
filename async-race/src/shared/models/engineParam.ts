@@ -1,8 +1,8 @@
-export interface EngineParam {
+export interface IEngineParams {
   velocity: number;
   distance: number;
 }
 
-export interface DriveStatus {
+export interface IDriveStatus {
   success: boolean;
 }

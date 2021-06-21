@@ -1,6 +1,6 @@
-import { CarModel } from './car-model';
+import { ICarModel } from './car-model';
 
-export interface CarsPage {
-  items: Promise<CarModel[]>;
+export interface ICars {
+  items: Promise<ICarModel[]>;
   count: number;
 }

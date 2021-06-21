@@ -4,9 +4,9 @@ import { BaseComponent } from '../../shared/baseComponent';
 import { Button } from '../../shared/button/button';
 import { Car } from '../../shared/Car/Car';
 import { PAGE_LENGTH } from '../../shared/constants';
-import { CarModel } from '../../shared/models/car-model';
-import { CarProperties } from '../../shared/models/car-properties';
-import { WinnerMessage } from '../../shared/models/winner-model';
+import { ICarModel } from '../../shared/models/car-model';
+import { ICarProps } from '../../shared/models/car-properties';
+import { IWinnerData } from '../../shared/models/winner-model';
 import { GarageControl } from './Garage control/garageControl';
 import './garage.scss';
 
@@ -31,7 +31,7 @@ export class Garage extends BaseComponent {
 
   private winMessage = new BaseComponent(this.element, 'p', ['win-message-container', 'visually-hidden']);
 
-  private winner: WinnerMessage = { id: 0, name: null, time: 0 };
+  private winner: IWinnerData = { id: 0, name: null, time: 0 };
 
   constructor(node: HTMLElement) {
     super(node, 'section', ['garage']);
@@ -110,7 +110,7 @@ export class Garage extends BaseComponent {
     });
   }
 
-  renderLastElement(pageItems: CarModel[]): void {
+  renderLastElement(pageItems: ICarModel[]): void {
     const lastElement = pageItems[6];
     const car = new Car(
       this.carsList.element,
@@ -210,7 +210,7 @@ export class Garage extends BaseComponent {
     });
   }
 
-  addCars(quantity: number, getBody: () => CarProperties): void {
+  addCars(quantity: number, getBody: () => ICarProps): void {
     for (let i = 0; i < quantity; i++) {
       api.createCar(getBody());
     }
@@ -223,7 +223,7 @@ export class Garage extends BaseComponent {
   async startRace(): Promise<void> {
     this.garageControl.controlButtons.race.element.disabled = true;
     this.garageControl.controlButtons.reset.element.disabled = true;
-    const promiseArray: Promise<WinnerMessage>[] = [];
+    const promiseArray: Promise<IWinnerData>[] = [];
     this.carsArray.forEach((car) => {
       promiseArray.push(car.drive());
     });
@@ -259,7 +259,7 @@ export class Garage extends BaseComponent {
     });
   }
 
-  showWinMessage(winner: WinnerMessage): void {
+  showWinMessage(winner: IWinnerData): void {
     this.winMessage.element.classList.remove('visually-hidden');
     this.winMessage.element.textContent = `${winner.name} won first (${winner.time}s)`;
   }

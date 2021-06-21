@@ -1,15 +1,15 @@
-export interface WinnerModel {
+export interface IWinner {
   id: number;
   wins: number;
   time: number;
 }
 
-export interface UpdateWinner {
+export interface IWinnerTime {
   wins: number;
   time: number;
 }
 
-export interface WinnerMessage {
+export interface IWinnerData {
   id: number;
   name: string | null;
   time: number;

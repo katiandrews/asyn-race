@@ -1,7 +1,7 @@
 import { BaseComponent } from '../../../shared/baseComponent';
 import { Button } from '../../../shared/button/button';
 import { Input } from '../../../shared/input/input';
-import { CarProperties } from '../../../shared/models/car-properties';
+import { ICarProps } from '../../../shared/models/car-properties';
 
 export class CarCreation extends BaseComponent {
   name: Input = new Input(this.element, ['text-input'], 'text');
@@ -15,7 +15,7 @@ export class CarCreation extends BaseComponent {
     this.name.element.addEventListener('input', () => { this.toggleButtonLock(); });
   }
 
-  getProperties(): CarProperties {
+  getProperties(): ICarProps {
     return {
       name: this.name.element.value,
       color: this.color.element.value,

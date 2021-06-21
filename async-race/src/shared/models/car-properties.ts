@@ -1,4 +1,4 @@
-export interface CarProperties {
+export interface ICarProps {
   name: string;
   color: string;
 }
