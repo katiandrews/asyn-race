@@ -8,7 +8,7 @@ import { SortParams } from './models/SortParams';
 import { IWinnerTime , IWinner } from './models/winner-model';
 import { IWinners } from './models/winnersPage-model';
 
-export class Api {
+class Api {
   private base = 'http://127.0.0.1:3000';
 
   private garage = `${this.base}/garage`;
@@ -42,17 +42,19 @@ export class Api {
   }
 
   async deleteCar(id: number): Promise<void> {
-    (await fetch(`${this.garage}/${id}`, { method: 'DELETE' })).json();
+    const respone = await fetch(`${this.garage}/${id}`, { method: 'DELETE' });
+    return respone.json();
   }
 
-  async updateCar(id: number, body: ICarProps): Promise<void> {
-    (await fetch(`${this.garage}/${id}`, {
+  async updateCar(id: number, body: ICarProps): Promise<ICarModel> {
+    const response = await fetch(`${this.garage}/${id}`, {
       method: 'PUT',
       body: JSON.stringify(body),
       headers: {
         'Content-Type': 'application/json',
       },
-    })).json();
+    });
+    return response.json();
   }
 
   async startEngine(id: number): Promise<IEngineParams> {
@@ -60,13 +62,14 @@ export class Api {
     return respone.json();
   }
 
-  async stopEngine(id: number): Promise<void> {
-    (await (fetch(`${this.engine}?id=${id}&status=${EngineStatus.stopped}`))).json();
+  async stopEngine(id: number): Promise<IEngineParams> {
+    const response = await (fetch(`${this.engine}?id=${id}&status=${EngineStatus.stopped}`));
+    return response.json();
   }
 
   async driveCar(id: number): Promise<IDriveStatus> {
     const response = await fetch(`${this.engine}?id=${id}&status=drive`).catch();
-    return response.status !== 200 ? { success: false } : { ...await response.json() };
+    return response.status !== 200 ? { success: false } : { ...response.json() };
   }
 
   async getWinners(page = 1, limit = 10, sort = SortParams.id, order = SortOrder.fromLowest): Promise<IWinners> {
@@ -105,7 +108,8 @@ export class Api {
   }
 
   async deleteWinner(id: number): Promise<void> {
-    (await fetch(`${this.winners}/${id}`, { method: 'DELETE' })).json();
+    const response = await fetch(`${this.winners}/${id}`, { method: 'DELETE' });
+    return response.json();
   }
 }
 
