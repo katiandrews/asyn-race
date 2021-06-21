@@ -51,16 +51,18 @@ export class Car extends BaseComponent {
   }
 
   drive(): Promise<IWinnerData> {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
       this.engineControl.toggleButton(this.engineControl.start);
-      api.startEngine(this.id).then(async (response) => {
+      api.startEngine(this.id).then((response) => {
         this.engineControl.toggleButton(this.engineControl.stop);
         const time = response.distance / response.velocity;
         const start = Date.now();
         this.carAnimation = requestAnimationFrame(() => { this.animate(time, start); });
         api.driveCar(this.id).then((result) => {
-          if (!result.success) cancelAnimationFrame(this.carAnimation);
-          else {
+          if (!result.success) {
+            cancelAnimationFrame(this.carAnimation);
+            reject(new Error('The engine has stopped'));
+          } else {
             resolve({
               id: this.id,
               name: this.name.element.textContent,

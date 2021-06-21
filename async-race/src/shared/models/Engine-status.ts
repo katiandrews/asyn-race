@@ -1,4 +1,4 @@
 export enum EngineStatus {
-    started = 'started',
-    stopped = 'stopped'
-  }
+  started = 'started',
+  stopped = 'stopped',
+}

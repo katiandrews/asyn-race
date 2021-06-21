@@ -17,17 +17,17 @@ export class Winners extends BaseComponent {
 
   private paginationContainer = new BaseComponent(this.element, 'div', ['pagination-buttons']);
 
-  private prevPage = new Button(this.paginationContainer.element, ['button', 'button_green'], 'Prev', true);
+  private prevPageBtn = new Button(this.paginationContainer.element, ['button', 'button_green'], 'Prev', true);
 
-  private nextPage = new Button(this.paginationContainer.element, ['button', 'button_green'], 'Next', true);
+  private nextPageBtn = new Button(this.paginationContainer.element, ['button', 'button_green'], 'Next', true);
 
   constructor(node: HTMLElement) {
     super(node, 'section', ['winners']);
     this.pageText.element.textContent = `Page #${this.pageNumber}`;
     this.updatePageName();
     this.renderWinners();
-    this.nextPage.element.addEventListener('click', () => this.changePage(this.nextPage));
-    this.prevPage.element.addEventListener('click', () => this.changePage(this.prevPage));
+    this.nextPageBtn.element.addEventListener('click', () => this.changePage(this.nextPageBtn));
+    this.prevPageBtn.element.addEventListener('click', () => this.changePage(this.prevPageBtn));
   }
 
   updatePageName(): void {
@@ -37,7 +37,7 @@ export class Winners extends BaseComponent {
   }
 
   renderWinners(): void {
-    api.getWinners(this.pageNumber, 10, SortParams.id, SortOrder.fromLowest).then(async (result) => {
+    api.getWinners(this.pageNumber, 10, SortParams.id, SortOrder.fromLowest).then((result) => {
       const winners = result.items;
       winners.forEach((winner) => {
         api.getCar(winner.id).then((car) => {
@@ -56,10 +56,10 @@ export class Winners extends BaseComponent {
   }
 
   updatePaginationButtons(): void {
-    this.prevPage.element.disabled = this.pageNumber === 1;
-    api.getWinners(this.pageNumber + 1).then(async (response) => {
-      const items = response.items;
-      this.nextPage.element.disabled = items.length === 0;
+    this.prevPageBtn.element.disabled = this.pageNumber === 1;
+    api.getWinners(this.pageNumber + 1).then((response) => {
+      const { items } = response;
+      this.nextPageBtn.element.disabled = items.length === 0;
     });
   }
 
@@ -68,10 +68,10 @@ export class Winners extends BaseComponent {
   }
 
   changePage(direction: Button): void {
-    if (direction === this.prevPage) {
+    if (direction === this.prevPageBtn) {
       this.renderPageNumber(--this.pageNumber);
       this.updatePage();
-    } else if (direction === this.nextPage) {
+    } else if (direction === this.nextPageBtn) {
       this.renderPageNumber(++this.pageNumber);
       this.updatePage();
     }

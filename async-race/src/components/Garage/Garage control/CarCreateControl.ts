@@ -3,7 +3,7 @@ import { Button } from '../../../shared/button/button';
 import { Input } from '../../../shared/input/input';
 import { ICarProps } from '../../../shared/models/car-properties';
 
-export class CarCreation extends BaseComponent {
+export class CarCreateControls extends BaseComponent {
   name: Input = new Input(this.element, ['text-input'], 'text');
 
   color: Input = new Input(this.element, ['color-input'], 'color');

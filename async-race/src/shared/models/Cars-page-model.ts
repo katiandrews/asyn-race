@@ -1,6 +1,6 @@
 import { ICarModel } from './car-model';
 
 export interface ICars {
-  items: Promise<ICarModel[]>;
+  items: ICarModel[];
   count: number;
 }

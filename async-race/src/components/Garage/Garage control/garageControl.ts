@@ -1,13 +1,13 @@
 import { BaseComponent } from '../../../shared/baseComponent';
-import { CarCreation } from './CarCreation';
-import { CarUpdate } from './CarUpdate';
+import { CarCreateControls } from './CarCreateControl';
+import { CarUpdateControls } from './CarUpdateControls';
 import { ControlButtons } from './ControlButtons';
 import './garageControl.scss';
 
 export class GarageControl extends BaseComponent {
-  createCar: CarCreation = new CarCreation(this.element);
+  createCar: CarCreateControls = new CarCreateControls(this.element);
 
-  updateCar: CarUpdate = new CarUpdate(this.element);
+  updateCar: CarUpdateControls = new CarUpdateControls(this.element);
 
   controlButtons: ControlButtons = new ControlButtons(this.element);
 

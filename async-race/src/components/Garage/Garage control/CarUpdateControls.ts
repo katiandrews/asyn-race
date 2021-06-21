@@ -4,7 +4,7 @@ import { Button } from '../../../shared/button/button';
 import { Car } from '../../../shared/Car/Car';
 import { Input } from '../../../shared/input/input';
 
-export class CarUpdate extends BaseComponent {
+export class CarUpdateControls extends BaseComponent {
   private name: Input = new Input(this.element, ['text-input'], 'text');
 
   private color: Input = new Input(this.element, ['color-input'], 'color');

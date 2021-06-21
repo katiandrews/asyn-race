@@ -5,7 +5,7 @@ import { EngineStatus } from './models/Engine-status';
 import { IDriveStatus, IEngineParams } from './models/engineParam';
 import { SortOrder } from './models/SortOrder';
 import { SortParams } from './models/SortParams';
-import { IWinnerTime , IWinner } from './models/winner-model';
+import { IWinnerTime, IWinner } from './models/winner-model';
 import { IWinners } from './models/winnersPage-model';
 
 class Api {
@@ -96,7 +96,7 @@ class Api {
     return response.json();
   }
 
-  async updateWinner(id: number, body: IWinnerTime ): Promise<IWinner> {
+  async updateWinner(id: number, body: IWinnerTime): Promise<IWinner> {
     const response = await fetch(`${this.winners}/${id}`, {
       method: 'PUT',
       body: JSON.stringify(body),
