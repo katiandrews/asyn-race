@@ -1,6 +1,8 @@
 import { api } from '../../shared/api';
 import { BaseComponent } from '../../shared/baseComponent';
 import { Button } from '../../shared/button/button';
+import { SortOrder } from '../../shared/models/SortOrder';
+import { SortParams } from '../../shared/models/SortParams';
 import { WinnersTable } from './winners-table';
 import './winners.scss';
 
@@ -29,13 +31,13 @@ export class Winners extends BaseComponent {
   }
 
   changePageName(): void {
-    api.getWinners(this.page, 10, 'id', 'ASC').then((result) => {
+    api.getWinners(this.page, 10, SortParams.id, SortOrder.fromLowest).then((result) => {
       this.pageName.element.textContent = `Winners (${result.count})`;
     });
   }
 
   renderWinners(): void {
-    api.getWinners(this.page, 10, 'id', 'ASC').then(async (result) => {
+    api.getWinners(this.page, 10, SortParams.id, SortOrder.fromLowest).then(async (result) => {
       const winners = await result.items;
       winners.forEach((winner) => {
         api.getCar(winner.id).then((car) => {

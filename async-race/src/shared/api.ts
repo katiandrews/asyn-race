@@ -1,7 +1,10 @@
 import { ICarModel } from './models/car-model';
 import { ICarProps } from './models/car-properties';
 import { ICars } from './models/Cars-page-model';
+import { EngineStatus } from './models/Engine-status';
 import { IDriveStatus, IEngineParams } from './models/engineParam';
+import { SortOrder } from './models/SortOrder';
+import { SortParams } from './models/SortParams';
 import { IWinnerTime , IWinner } from './models/winner-model';
 import { IWinners } from './models/winnersPage-model';
 
@@ -53,12 +56,12 @@ export class Api {
   }
 
   async startEngine(id: number): Promise<IEngineParams> {
-    const respone = await (fetch(`${this.engine}?id=${id}&status=started`));
+    const respone = await (fetch(`${this.engine}?id=${id}&status=${EngineStatus.started}`));
     return respone.json();
   }
 
   async stopEngine(id: number): Promise<void> {
-    (await (fetch(`${this.engine}?id=${id}&status=stopped`))).json();
+    (await (fetch(`${this.engine}?id=${id}&status=${EngineStatus.stopped}`))).json();
   }
 
   async driveCar(id: number): Promise<IDriveStatus> {
@@ -66,7 +69,7 @@ export class Api {
     return response.status !== 200 ? { success: false } : { ...await response.json() };
   }
 
-  async getWinners(page = 1, limit = 10, sort = 'id', order = 'ASC'): Promise<IWinners> {
+  async getWinners(page = 1, limit = 10, sort = SortParams.id, order = SortOrder.fromLowest): Promise<IWinners> {
     const response = await fetch(`${this.winners}?_page=${page}&_limit=${limit}&_sort=${sort}&_order=${order}`);
     return {
       items: await response.json(),
