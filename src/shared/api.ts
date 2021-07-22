@@ -9,7 +9,7 @@ import { IWinnerTime, IWinner } from './models/winner-model';
 import { IWinners } from './models/winnersPage-model';
 
 class Api {
-  private base = 'http://127.0.0.1:3000';
+  private base = 'https://aqueous-brook-77293.herokuapp.com/';
 
   private garage = `${this.base}/garage`;
 
