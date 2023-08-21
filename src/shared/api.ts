@@ -9,7 +9,7 @@ import { IWinnerTime, IWinner } from './models/winner-model';
 import { IWinners } from './models/winnersPage-model';
 
 class Api {
-  private base = 'https://aqueous-brook-77293.herokuapp.com';
+  private base = 'https://async-race-b4gx.onrender.com';
 
   private garage = `${this.base}/garage`;
 
@@ -58,17 +58,17 @@ class Api {
   }
 
   async startEngine(id: number): Promise<IEngineParams> {
-    const respone = await (fetch(`${this.engine}?id=${id}&status=${EngineStatus.started}`));
+    const respone = await fetch(`${this.engine}?id=${id}&status=${EngineStatus.started}`, { method: 'PATCH' });
     return respone.json();
   }
 
   async stopEngine(id: number): Promise<IEngineParams> {
-    const response = await (fetch(`${this.engine}?id=${id}&status=${EngineStatus.stopped}`));
+    const response = await fetch(`${this.engine}?id=${id}&status=${EngineStatus.stopped}`, { method: 'PATCH' });
     return response.json();
   }
 
   async driveCar(id: number): Promise<IDriveStatus> {
-    const response = await fetch(`${this.engine}?id=${id}&status=drive`).catch();
+    const response = await fetch(`${this.engine}?id=${id}&status=drive`, { method: 'PATCH' }).catch();
     return response.status !== 200 ? { success: false } : { success: true };
   }
 
